@@ -26,3 +26,11 @@ const requestHelper = (method: HttpVerb, path: string, payload: object) => {
   }
   return JSON.parse(res.body.toString());
 };
+
+const requestUserCreate = (
+    username: string, 
+    email: string, 
+    password: string
+) => {
+    
+}
