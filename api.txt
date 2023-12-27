@@ -1,0 +1,124 @@
+API Documentation for chatroom
+chatroom is an opensourced chatroom project being developed by haeohreum kim and jiefu lu.
+
+Routes:
+-------------------------------------------------------------
+/auth/user/create POST
+desc: creates a user into the chatroom
+example parameters:
+{
+    "username": "haezera",
+    "email": "haeohreum04@gmail.com",
+    "password": "Password123"
+}
+
+responses:
+200 When:
+- OK
+Example response:
+{ "token": "12345678" }
+
+400 When:
+- Email is already being used
+- Email is invalid
+- Username is already being used
+- Password is less than 8 characters
+-------------------------------------------------------------
+/auth/user/login PUT
+desc: logs in a user into the chatroom website
+example parameters:
+{
+    "email": "haeohreum04@gmail.com",
+    "password": "Password123"
+}
+
+response:
+200 When:
+- OK
+Example response:
+{ "token": "12345678" }
+
+400 When:
+- Email is an invalid email
+- Password is incorrect
+- Email doesn't exist within the database
+-------------------------------------------------------------
+/auth/user/logout PUT
+desc: logs out a user from the chatroom website
+example parameters:
+{
+    "token": "123456789"
+}
+
+response:
+200 When:
+- OK
+Example response:
+{}
+
+400 When:
+- There is no such token within the database.
+Example response:
+{
+    "error": "error message"
+}
+
+401 When:
+- The token is not a valid structure
+Example response:
+{
+    "error: "error message"
+}
+-------------------------------------------------------------
+/auth/admin/sessions GET
+desc: returns a jsonified array of current sessions 
+example parameters:
+{
+    "password": "admin"
+}
+
+response:
+200 When:
+- OK
+Example response:
+{
+    "sessions": [
+        {
+            "username": "haezera",
+            "token": "123456789",
+        }
+    ]
+}
+
+400 When:
+- The admin password is incorrect.
+-------------------------------------------------------------
+/room/create POST
+desc: create a new chatroom
+example parameters:
+{
+    "token": "123456789",
+    "password": "This is optional",
+    "name": "This is also optional - if left, then the room name will be the owners name."
+}
+
+response:
+200 When:
+- OK
+Example response:
+{}
+
+400 When:
+- There is already a room with the same name.
+- The token does not exist within the database.
+
+401 When:
+- The token does not satisfy the UUID v4 format.
+-------------------------------------------------------------
+/room/delete DELETE 
+desc: delete a room (can only be done by the owner)
+
+
+
+
+

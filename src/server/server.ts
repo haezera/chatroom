@@ -74,3 +74,9 @@ app.listen(parseInt(PORT), HOST, () => {
   // DO NOT CHANGE THIS LINE
   console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
 });
+
+process.on('SIGINT', function () {
+  console.log('\nGracefully shutting down from SIGINT (Ctrl-C)');
+  // some other closing procedures go here
+  process.exit(0);
+});
