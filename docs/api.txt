@@ -5,7 +5,7 @@ Routes:
 
 AUTHORISATION ROUTES
 -------------------------------------------------------------
-/auth/user/create POST
+/v1/auth/user/create POST
 desc: creates a user into the chatroom
 example parameters:
 {
@@ -27,7 +27,7 @@ Example response:
 - Password is less than 8 characters
 
 -------------------------------------------------------------
-/auth/user/login PUT
+/v1/auth/user/login PUT
 desc: logs in a user into the chatroom website
 example parameters:
 {
@@ -47,7 +47,7 @@ Example response:
 - Email doesn't exist within the database
 
 -------------------------------------------------------------
-/auth/user/logout PUT
+/v1/auth/user/logout PUT
 desc: logs out a user from the chatroom website
 headers:
 "token": "123456789"
@@ -73,7 +73,7 @@ Example response:
 }
 
 -------------------------------------------------------------
-/auth/admin/sessions GET
+/v1/auth/admin/sessions GET
 desc: returns a jsonified array of current sessions 
 example parameters:
 {
@@ -99,7 +99,7 @@ Example response:
 
 ROOM ROUTES
 -------------------------------------------------------------
-/room/create POST
+/v1/room/create POST
 desc: create a new chatroom
 headers:
 "token": "123456789"
@@ -123,7 +123,7 @@ Example response:
 - The token does not satisfy the UUID v4 format.
 
 -------------------------------------------------------------
-/room/delete DELETE 
+/v1/room/delete DELETE 
 desc: delete a room (can only be done by the owner)
 headers:
 "token": "123456789"
@@ -147,7 +147,7 @@ Example response:
 - The token does not satisfy the UUID v4 format.
 
 -------------------------------------------------------------
-/room/{roomId}/join PUT
+/v1/room/{roomId}/join PUT
 desc: allow a user to join a room 
 headers: 
 "token": "123456789"
@@ -167,7 +167,7 @@ Example response:
 - The token inputted does not conform to UUID v4 standards.
 
 -------------------------------------------------------------
-/room/{roomId}/leave DELETE
+/v1/room/{roomId}/leave DELETE
 desc: allow a user to leave a room
 headers:
 "token": "123456789"
