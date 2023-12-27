@@ -1,14 +1,28 @@
 import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server, Socket as ServerSocket } from 'socket.io';
-import path from "path";
-
+import { setupSQL } from '../utils/setup';
+import mysql from 'mysql2';
+import path from 'path';
 
 /// GET CONFIGURATION CONSTANTS
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 
 const PORT = process.env.APP_PORT;
+const HOST = process.env.APP_HOST;
+const SQL_USER = process.env.SQL_USER;
+const SQL_PASSWORD = process.env.SQL_PASSWORD;
+
+// MYSQL SETUP
+
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: SQL_USER,
+  password: SQL_PASSWORD
+});
+
+setupSQL(connection);
 
 /// ALL LIBRARY CONSTANTS
 
@@ -16,34 +30,34 @@ const app = express();
 
 /// BASIC FILE SERVING
 
-app.get("/", (req: Request, res: Response) => {
+app.get('/', (req: Request, res: Response) => {
   // jeff: this double .. thing seems kinda sketchy
-  res.sendFile(path.resolve(__dirname, "../../public/index.html"), {
-      headers: {
-          "Content-Type": "text/html",
-      },
+  res.sendFile(path.resolve(__dirname, '../../public/index.html'), {
+    headers: {
+      'Content-Type': 'text/html',
+    },
   });
 });
 
-app.get("/index.js", (req: Request, res: Response) => {
-  res.sendFile(path.resolve(__dirname, "../../public/index.js"), {
-      headers: {
-          "Content-Type": "text/javascript",
-      },
+app.get('/index.js', (req: Request, res: Response) => {
+  res.sendFile(path.resolve(__dirname, '../../public/index.js'), {
+    headers: {
+      'Content-Type': 'text/javascript',
+    },
   });
-})
+});
 
 /// API ENDPOINTS
 
+app.get('/', (req: Request, res: Response) => {
+  res.json('{ message: "You have accessed the root!" }');
+});
+
 /// SOCKET STUFF
 
-const server = createServer(app);
+const socket = createServer(app);
 // Initialising the server socket.
-const io = new Server(server);
-
-app.get('/', (req: Request, res: Response) => {
-  res.send('<h1>You have accessed the root!</h1>');
-});
+const io = new Server(socket);
 
 io.on('connection', (socket: ServerSocket) => {
   console.log('User has been connected.');
@@ -56,6 +70,7 @@ io.on('connection', (socket: ServerSocket) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`);
+app.listen(parseInt(PORT), HOST, () => {
+  // DO NOT CHANGE THIS LINE
+  console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
 });
