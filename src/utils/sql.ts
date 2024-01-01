@@ -11,6 +11,8 @@ INSERT INTO users (
 ) VALUES (%s, %s, %s, %s)
 `;
 
+// Insert a new session into the database.
+
 //  Insert a new room into the database.
 export const insertRoom = `
 INSERT INTO rooms(
