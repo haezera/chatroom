@@ -1,0 +1,19 @@
+The database is a mySQL database.
+
+The following tables exist within the database.
+
+users:
+=> userId VARCHAR(255)
+=> username VARCHAR(255)
+=> password VARCHAR(255)
+=> email VARCHAR(255)
+=> roomId VARCHAR(255) [NULL if not in a room yet]
+
+rooms:
+=> roomId VARCHAR(255)
+=> owner VARCHAR(255)
+
+sessions:
+=> token VARCHAR(255)
+=> sessionId VARCHAR(255)
+=> username VARCHAR(255)

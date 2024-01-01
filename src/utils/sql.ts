@@ -7,7 +7,30 @@ INSERT INTO users (
     username,
     email,
     password,
+    roomId
+) VALUES (%s, %s, %s, %s)
+`;
+
+//  Insert a new room into the database.
+export const insertRoom = `
+INSERT INTO rooms(
+    room_id,
+    username
 ) VALUES (%s, %s, %s)
+`;
+
+// Returns 1 if a user is in a room, and 0 if they aren't.
+export const userInRoom = `
+SELECT
+    CASE
+        WHEN EXISTS(
+            SELECT 1
+            FROM users
+            WHERE username = %s
+        )
+        THEN 1
+        ELSE 0
+    END as element exists;
 `;
 
 // Returns 1 if the user exists, and 0 if the user doesn't.
@@ -66,6 +89,7 @@ export const fetchRoomId = `
 select room_id FROM users WHERE username=%s
 `;
 
+// Checks if a given password is correct within the database.
 export const checkPassword = `
 SELECT password FROM users WHERE id=%s
 `;

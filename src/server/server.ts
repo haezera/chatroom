@@ -39,6 +39,11 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
+app.delete('/v1/auth/clear', (req: Request, res: Response) => {
+  setupSQL(connection); // Just resets the database
+  res.json({});
+});
+
 app.get('/index.js', (req: Request, res: Response) => {
   res.sendFile(path.resolve(__dirname, '../../public/index.js'), {
     headers: {
@@ -50,7 +55,7 @@ app.get('/index.js', (req: Request, res: Response) => {
 /// API ENDPOINTS
 
 app.get('/', (req: Request, res: Response) => {
-  res.json('{ message: "You have accessed the root!" }');
+  res.json({ message: 'You have accessed the root!' });
 });
 
 /// SOCKET STUFF
@@ -73,4 +78,10 @@ io.on('connection', (socket: ServerSocket) => {
 app.listen(parseInt(PORT), HOST, () => {
   // DO NOT CHANGE THIS LINE
   console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
+});
+
+process.on('SIGINT', function () {
+  console.log('\nGracefully shutting down from SIGINT (Ctrl-C)');
+  // some other closing procedures go here
+  process.exit(0);
 });
