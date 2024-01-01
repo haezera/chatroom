@@ -47,6 +47,10 @@ export const requestUserLogout = (token: string) => {
   return requestHelper('PUT', '/v1/auth/user/logout', { }, { token });
 };
 
+export const requestClear = () => {
+  return requestHelper('DELETE', '/v1/auth/clear', { }, { });
+};
+
 export const requestGetSessions = (password: string) => {
   return requestHelper('GET', '/v1/auth/admin/sessions', { password }, { });
 };

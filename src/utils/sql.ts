@@ -7,7 +7,8 @@ INSERT INTO users (
     username,
     email,
     password,
-) VALUES (%s, %s, %s)
+    roomId
+) VALUES (%s, %s, %s, %s)
 `;
 
 //  Insert a new room into the database.

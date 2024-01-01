@@ -5,6 +5,9 @@ Routes:
 
 AUTHORISATION ROUTES
 -------------------------------------------------------------
+/v1/auth/clear
+desc: clears everything
+-------------------------------------------------------------
 /v1/auth/user/create POST
 desc: creates a user into the chatroom
 example parameters:

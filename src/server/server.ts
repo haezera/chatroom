@@ -39,6 +39,11 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
+app.delete('/v1/auth/clear', (req: Request, res: Response) => {
+  setupSQL(connection); // Just resets the database
+  res.json({});
+});
+
 app.get('/index.js', (req: Request, res: Response) => {
   res.sendFile(path.resolve(__dirname, '../../public/index.js'), {
     headers: {
@@ -50,7 +55,7 @@ app.get('/index.js', (req: Request, res: Response) => {
 /// API ENDPOINTS
 
 app.get('/', (req: Request, res: Response) => {
-  res.json('{ message: "You have accessed the root!" }');
+  res.json({ message: 'You have accessed the root!' });
 });
 
 /// SOCKET STUFF
