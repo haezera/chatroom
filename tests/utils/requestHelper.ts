@@ -1,8 +1,6 @@
 import request, { HttpVerb } from 'sync-request-curl';
 import { IncomingHttpHeaders } from 'http';
-const HOST = process.env.HOST;
-const PORT = process.env.PORT;
-const SERVER_URL = `http://${HOST}:${PORT}}`;
+const SERVER_URL = 'http://localhost:3000';
 const TIMEOUT_MS = 15000;
 // Helpers
 /**

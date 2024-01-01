@@ -3,7 +3,7 @@ import { hashPassword } from '../password';
 import validator from 'validator';
 import HTTPError from 'http-errors';
 import { v4 as uuidv4 } from 'uuid';
-import { insertUser } from '../sql';
+import { insertUser, insertSession, userInRoom } from '../sql';
 
 export const userCreate = (
   connection: Connection,
@@ -17,8 +17,21 @@ export const userCreate = (
     throw HTTPError(400, 'Password is less then 8 characters.');
   }
 
+  // Check if username is already in the database.
+  connection.query(
+    userInRoom,
+    [username],
+    (err: any, results: any) => {
+      if (err) {
+        throw HTTPError(400, `There has been an SQL error: ${err}`);
+      } else {
+        console.log(results);
+      }
+    }
+  );
+
   const hashedPw = hashPassword(password);
-  const id = uuidv4();
+  const session = uuidv4();
 
   // Insert the user into the users table
   connection.query(
@@ -34,5 +47,17 @@ export const userCreate = (
   );
 
   // Now create a session for them (Auto login after registration)
-  
+  connection.query(
+    insertSession,
+    [session, username],
+    (err: any, results: any) => {
+      if (err) {
+        throw HTTPError(400, `There has been an SQL error: ${err}`);
+      } else {
+        console.log(results);
+      }
+    }
+  );
+
+  return { sessionId: session };
 };

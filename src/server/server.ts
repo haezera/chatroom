@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server, Socket as ServerSocket } from 'socket.io';
 import { setupSQL } from '../utils/setup';
+import { userCreate } from '../utils/auth/userCreate';
 import mysql from 'mysql2';
 import path from 'path';
 
@@ -55,6 +56,8 @@ app.get('/', (req: Request, res: Response) => {
 
 app.post('/v1/auth/user/create', (req: Request, res: Response) => {
   const { username, email, password } = req.body;
+  const response = userCreate(connection, username, email, password);
+  res.json(response);
 });
 
 app.delete('/v1/auth/clear', (req: Request, res: Response) => {

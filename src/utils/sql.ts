@@ -12,6 +12,12 @@ INSERT INTO users (
 `;
 
 // Insert a new session into the database.
+export const insertSession = `
+INSERT into sessions(
+    sessionId,
+    username
+) VALUES (%s, %s, %s)
+`;
 
 //  Insert a new room into the database.
 export const insertRoom = `
