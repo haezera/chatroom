@@ -1,4 +1,4 @@
-import { bcrypt } from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 // Hashes passwords
 export function hashPassword(password: string): string {

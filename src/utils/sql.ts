@@ -65,7 +65,7 @@ SELECT
         )
         THEN 1
         ELSE 0
-    END AS element_exists;
+    END AS element exists;
 `;
 
 // Fetches the email using a users id
