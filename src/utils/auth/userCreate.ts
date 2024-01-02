@@ -18,17 +18,24 @@ export const userCreate = (
   }
 
   // Check if username is already in the database.
-  connection.query(
-    userInRoom,
-    [username],
-    (err: any, results: any) => {
-      if (err) {
-        throw HTTPError(400, `There has been an SQL error: ${err}`);
-      } else {
-        console.log(results);
+  try {
+    connection.query(
+      userInRoom,
+      [username],
+      (err: any, results: any) => {
+        if (err) {
+          console.log(err);
+          throw HTTPError(400, 'There has been an SQL error.');
+        } else {
+          if (results[0].element_exists === 1) {
+            throw new Error('Username already exists');
+          }
+        }
       }
-    }
-  );
+    );
+  } catch (err) {
+    throw HTTPError(400, err);
+  }
 
   const hashedPw = hashPassword(password);
   const session = uuidv4();
@@ -39,6 +46,7 @@ export const userCreate = (
     [username, email, hashedPw, null],
     (err: any, results: any) => {
       if (err) {
+        console.log(err);
         throw HTTPError(400, 'There has been an SQL error');
       } else {
         console.log(results);

@@ -8,7 +8,7 @@ INSERT INTO users (
     email,
     password,
     roomId
-) VALUES (%s, %s, %s, %s)
+) VALUES (?, ?, ?, ?)
 `;
 
 // Insert a new session into the database.
@@ -16,7 +16,7 @@ export const insertSession = `
 INSERT into sessions(
     sessionId,
     username
-) VALUES (%s, %s, %s)
+) VALUES (?, ?)
 `;
 
 //  Insert a new room into the database.
@@ -24,21 +24,21 @@ export const insertRoom = `
 INSERT INTO rooms(
     room_id,
     username
-) VALUES (%s, %s, %s)
+) VALUES (?, ?, ?)
 `;
 
 // Returns 1 if a user is in a room, and 0 if they aren't.
 export const userInRoom = `
 SELECT
     CASE
-        WHEN EXISTS(
+        WHEN EXISTS (
             SELECT 1
             FROM users
-            WHERE username = %s
+            WHERE username = ?
         )
         THEN 1
         ELSE 0
-    END as element exists;
+    END AS element_exists;
 `;
 
 // Returns 1 if the user exists, and 0 if the user doesn't.
@@ -61,11 +61,11 @@ SELECT
         WHEN EXISTS (
             SELECT 1
             FROM users
-            WHERE id = %s
+            WHERE id = ?
         )
         THEN 1
         ELSE 0
-    END AS element exists;
+    END AS element_exists;
 `;
 
 // Fetches the email using a users id
@@ -80,7 +80,7 @@ SELECT
 //    }
 // )
 export const fetchEmail = `
-SELECT id FROM users WHERE email=%s
+SELECT id FROM users WHERE email=?
 `;
 
 // Fetches the room id of a username.
@@ -94,12 +94,12 @@ SELECT id FROM users WHERE email=%s
 //    }
 // )
 export const fetchRoomId = `
-select room_id FROM users WHERE username=%s
+select room_id FROM users WHERE username=?
 `;
 
 // Checks if a given password is correct within the database.
 export const checkPassword = `
-SELECT password FROM users WHERE id=%s
+SELECT password FROM users WHERE id=?
 `;
 
 // Pass in an id and a new password for the user.
@@ -115,8 +115,8 @@ SELECT password FROM users WHERE id=%s
 // )
 export const updatePassword = `
 UPDATE users
-SET password=%s
-WHERE id=%s
+SET password=?
+WHERE id=?
 `;
 
 // Pass in an id and a new email for the user.
@@ -132,6 +132,6 @@ WHERE id=%s
 // )
 export const updateEmail = `
 UPDATE users
-SET email=%s
-WHERE id=%s
+SET email=?
+WHERE id=?
 `;

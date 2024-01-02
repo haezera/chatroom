@@ -31,7 +31,6 @@ const app = express();
 app.use(json());
 app.use(cors());
 app.use(morgan('dev'));
-app.use(errorHandler());
 
 /// BASIC FILE SERVING
 
@@ -68,7 +67,8 @@ app.delete('/v1/auth/clear', (req: Request, res: Response) => {
   setupSQL(connection); // Just resets the database
   res.json({});
 });
-/// SOCKET STUFF
+
+app.use(errorHandler());
 
 app.listen(parseInt(PORT), HOST, () => {
   // DO NOT CHANGE THIS LINE
