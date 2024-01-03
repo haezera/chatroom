@@ -1,10 +1,11 @@
-import express, { Request, Response } from 'express';
-import { createServer } from 'http';
-import { Server, Socket as ServerSocket } from 'socket.io';
+import express, { json, Request, Response } from 'express';
 import { setupSQL } from '../utils/setup';
+import { userCreate } from '../utils/auth/userCreate';
 import mysql from 'mysql2';
 import path from 'path';
-
+import cors from 'cors';
+import morgan from 'morgan';
+import errorHandler from 'middleware-http-errors';
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';
 dotenv.config();
@@ -27,6 +28,9 @@ setupSQL(connection);
 /// ALL LIBRARY CONSTANTS
 
 const app = express();
+app.use(json());
+app.use(cors());
+app.use(morgan('dev'));
 
 /// BASIC FILE SERVING
 
@@ -37,11 +41,6 @@ app.get('/', (req: Request, res: Response) => {
       'Content-Type': 'text/html',
     },
   });
-});
-
-app.delete('/v1/auth/clear', (req: Request, res: Response) => {
-  setupSQL(connection); // Just resets the database
-  res.json({});
 });
 
 app.get('/index.js', (req: Request, res: Response) => {
@@ -58,22 +57,18 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'You have accessed the root!' });
 });
 
-/// SOCKET STUFF
-
-const socket = createServer(app);
-// Initialising the server socket.
-const io = new Server(socket);
-
-io.on('connection', (socket: ServerSocket) => {
-  console.log('User has been connected.');
-  socket.on('disconnect', () => {
-    console.log('User has disconnected.');
-  });
-
-  socket.on('message', (msg) => {
-    socket.broadcast.emit('message', msg);
-  });
+app.post('/v1/auth/user/create', (req: Request, res: Response) => {
+  const { username, email, password } = req.body;
+  const response = userCreate(connection, username, email, password);
+  res.json(response);
 });
+
+app.delete('/v1/auth/clear', (req: Request, res: Response) => {
+  setupSQL(connection); // Just resets the database
+  res.json({});
+});
+
+app.use(errorHandler());
 
 app.listen(parseInt(PORT), HOST, () => {
   // DO NOT CHANGE THIS LINE

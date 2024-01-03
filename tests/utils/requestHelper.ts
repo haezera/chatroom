@@ -1,8 +1,13 @@
 import request, { HttpVerb } from 'sync-request-curl';
 import { IncomingHttpHeaders } from 'http';
-const HOST = process.env.HOST;
-const PORT = process.env.PORT;
-const SERVER_URL = `http://${HOST}:${PORT}}`;
+/// GET CONFIGURATION CONSTANTS
+import dotenv from 'dotenv';
+dotenv.config();
+
+const PORT = process.env.APP_PORT;
+const HOST = process.env.APP_HOST;
+
+const SERVER_URL = `http://${HOST}:${PORT}`;
 const TIMEOUT_MS = 15000;
 // Helpers
 /**
