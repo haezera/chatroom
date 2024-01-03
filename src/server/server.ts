@@ -1,3 +1,4 @@
+// IMPORTS
 import express, { json, Request, Response } from 'express';
 import { setupSQL } from '../utils/setup';
 import { userCreate } from '../utils/auth/userCreate';
@@ -6,6 +7,10 @@ import path from 'path';
 import cors from 'cors';
 import morgan from 'morgan';
 import errorHandler from 'middleware-http-errors';
+import http from 'http';
+import { v4 as uuidv4 } from 'uuid';
+import { WebSocketServer } from 'ws';
+import { socket } from '../utils/interfaces';
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';
 dotenv.config();
@@ -25,9 +30,16 @@ const connection = mysql.createConnection({
 
 setupSQL(connection);
 
-/// ALL LIBRARY CONSTANTS
+// SERVER AND WEB SOCKET INITIALISATION
 
 const app = express();
+
+const server = http.createServer(app);
+
+const wss = new WebSocketServer({ server: server });
+
+const connections = [];
+
 app.use(json());
 app.use(cors());
 app.use(morgan('dev'));
@@ -67,6 +79,25 @@ app.delete('/v1/auth/clear', (req: Request, res: Response) => {
   setupSQL(connection); // Just resets the database
   res.json({});
 });
+
+// WEB SOCKETS
+
+wss.on('connection', (ws) => {
+  let conn: socket;
+  conn.id = uuidv4();
+  conn.websocket = ws;
+  connections.push(conn);
+
+  // Send out messages to everyone
+  ws.on('message', (msg) => {
+    console.log('received message:', msg.toString());
+    for (const conns of connections) {
+      conns.send(msg.toString());
+    }
+  });
+});
+
+// SERVER ACTIVATION
 
 app.use(errorHandler());
 

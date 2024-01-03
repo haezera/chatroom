@@ -47,6 +47,7 @@ Example response:
 400 When:
 - Email is an invalid email
 - Password is incorrect
+- User already logged in
 - Email doesn't exist within the database
 
 -------------------------------------------------------------
