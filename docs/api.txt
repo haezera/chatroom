@@ -54,7 +54,7 @@ Example response:
 /v1/auth/user/logout PUT
 desc: logs out a user from the chatroom website
 headers:
-"token": "123456789"
+"sessionId": "123456789"
 
 response:
 200 When:
