@@ -94,7 +94,12 @@ SELECT id FROM users WHERE email=?
 //    }
 // )
 export const fetchRoomId = `
-select room_id FROM users WHERE username=?
+SELECT room_id FROM users WHERE username=?
+`;
+
+// Fetches all the sessions
+export const getSessions = `
+SELECT * FROM sessions;
 `;
 
 // Checks if a given password is correct within the database.

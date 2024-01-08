@@ -3,8 +3,12 @@ import { requestUserCreate } from "../utils/requestHelper";
 import { requestClear } from "../utils/requestHelper";
 
 describe('Get sessions test', () => {
-  test('Success', () => {
+  beforeEach(() => {
+    requestClear();
+  });
 
+  test('Success', () => {
+    
   });
 
   test('Admin password is not correct', () => {

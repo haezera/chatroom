@@ -2,6 +2,7 @@
 import express, { json, Request, Response } from 'express';
 import { setupSQL } from '../utils/setup';
 import { userCreate } from '../utils/auth/userCreate';
+import { fetchSessions } from '../utils/auth/getSessions';
 import mysql from 'mysql2';
 import path from 'path';
 import cors from 'cors';
@@ -72,6 +73,12 @@ app.get('/', (req: Request, res: Response) => {
 app.post('/v1/auth/user/create', (req: Request, res: Response) => {
   const { username, email, password } = req.body;
   const response = userCreate(connection, username, email, password);
+  res.json(response);
+});
+
+app.get('/v1/auth/admin/sessions', (req: Request, res: Response) => {
+  const { password } = req.body;
+  const response = fetchSessions(connection, password);
   res.json(response);
 });
 
