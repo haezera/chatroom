@@ -1,6 +1,10 @@
 import WebSocket from 'ws';
 
 export interface socket {
-  id: string,
-  websocket: WebSocket
+  id: string | null,
+  websocket: WebSocket | null
+}
+
+export interface userDbResult {
+  element_exists: number
 }

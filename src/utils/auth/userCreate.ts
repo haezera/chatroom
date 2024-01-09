@@ -4,8 +4,9 @@ import validator from 'validator';
 import HTTPError from 'http-errors';
 import { v4 as uuidv4 } from 'uuid';
 import { insertUser, insertSession, userInRoom } from '../sql';
+import { userDbResult } from '../interfaces';
 
-export const userCreate = (
+export const userCreate = async (
   connection: Connection,
   username: string,
   email: string,
@@ -19,20 +20,11 @@ export const userCreate = (
 
   // Check if username is already in the database.
   try {
-    connection.query(
-      userInRoom,
-      [username],
-      (err: any, results: any) => {
-        if (err) {
-          console.log(err);
-          throw HTTPError(400, 'There has been an SQL error.');
-        } else {
-          if (results[0].element_exists === 1) {
-            throw new Error('Username already exists');
-          }
-        }
-      }
-    );
+    const res = await connection.promise().query(userInRoom, [username]) as any;
+    const check: userDbResult = res[0];
+    if (check.element_exists === 1) {
+      throw new Error('Username already exists');
+    }
   } catch (err) {
     throw HTTPError(400, err);
   }

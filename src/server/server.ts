@@ -16,14 +16,14 @@ import { socket } from '../utils/interfaces';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const PORT = process.env.APP_PORT;
-const HOST = process.env.APP_HOST;
-const SQL_USER = process.env.SQL_USER;
-const SQL_PASSWORD = process.env.SQL_PASSWORD;
+const PORT: string = process.env.APP_PORT as string;
+const HOST: string = process.env.APP_HOST as string;
+const SQL_USER: string = process.env.SQL_USER as string;
+const SQL_PASSWORD: string = process.env.SQL_PASSWORD as string;
 
 // MYSQL SETUP
-
-const connection = mysql.createConnection({
+let connection: any = null;
+connection = mysql.createConnection({
   host: 'localhost',
   user: SQL_USER,
   password: SQL_PASSWORD
@@ -39,7 +39,7 @@ const server = http.createServer(app);
 
 const wss = new WebSocketServer({ server: server });
 
-const connections = [];
+const connections: any = [];
 
 app.use(json());
 app.use(cors());
@@ -70,15 +70,17 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'You have accessed the root!' });
 });
 
-app.post('/v1/auth/user/create', (req: Request, res: Response) => {
+app.post('/v1/auth/user/create', async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
-  const response = userCreate(connection, username, email, password);
+  const response = await userCreate(connection, username, email, password);
+  console.log(response);
   res.json(response);
 });
 
-app.get('/v1/auth/admin/sessions', (req: Request, res: Response) => {
-  const { password } = req.body;
-  const response = fetchSessions(connection, password);
+app.get('/v1/auth/admin/sessions', async (req: Request, res: Response) => {
+  const password = req.query.password as string;
+  const response = await fetchSessions(connection, password);
+
   res.json(response);
 });
 
@@ -90,7 +92,7 @@ app.delete('/v1/auth/clear', (req: Request, res: Response) => {
 // WEB SOCKETS
 
 wss.on('connection', (ws) => {
-  let conn: socket;
+  const conn: socket = { id: '', websocket: null };
   conn.id = uuidv4();
   conn.websocket = ws;
   connections.push(conn);

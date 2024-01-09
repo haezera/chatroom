@@ -48,8 +48,8 @@ export const requestUserLogin = (
   return requestHelper('PUT', '/v1/auth/user/login', { email, password }, { });
 };
 
-export const requestUserLogout = (token: string) => {
-  return requestHelper('PUT', '/v1/auth/user/logout', { }, { token });
+export const requestUserLogout = (sessionId: string) => {
+  return requestHelper('PUT', '/v1/auth/user/logout', { }, { sessionId });
 };
 
 export const requestClear = () => {
