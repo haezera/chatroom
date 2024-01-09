@@ -58,5 +58,5 @@ export const userCreate = async (
     }
   );
 
-  return { sessionId: session };
+  return { session: session };
 };

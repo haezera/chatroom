@@ -48,8 +48,8 @@ export const requestUserLogin = (
   return requestHelper('PUT', '/v1/auth/user/login', { email, password }, { });
 };
 
-export const requestUserLogout = (sessionId: string) => {
-  return requestHelper('PUT', '/v1/auth/user/logout', { }, { sessionId });
+export const requestUserLogout = (session: string) => {
+  return requestHelper('DELETE', '/v1/auth/user/logout', { }, { session });
 };
 
 export const requestClear = () => {
@@ -57,17 +57,17 @@ export const requestClear = () => {
 };
 
 export const requestGetSessions = (password: string) => {
-  return requestHelper('GET', '/v1/auth/admin/sessions', { password }, { });
+  return requestHelper('GET', '/v1/auth/admin/sessions', { }, { password });
 };
 
-export const requestRoomCreate = (token: string, password?: string, name?: string) => {
-  return requestHelper('POST', '/v1/room/create', { password, name }, { token });
+export const requestRoomCreate = (session: string, password?: string, name?: string) => {
+  return requestHelper('POST', '/v1/room/create', { password, name }, { session });
 };
 
-export const requestRoomDelete = (token: string, roomId: string) => {
-  return requestHelper('DELETE', '/v1/room/delete', { token, roomId }, { });
+export const requestRoomDelete = (session: string, roomId: string) => {
+  return requestHelper('DELETE', '/v1/room/delete', { roomId }, { session });
 };
 
-export const requestRoomJoin = (token: string, roomId: string) => {
-  return requestHelper('PUT', parseRouteParams('/v1/room/:roomId/join', { roomId: roomId }), { roomId }, { token });
+export const requestRoomJoin = (session: string, roomId: string) => {
+  return requestHelper('PUT', parseRouteParams('/v1/room/:roomId/join', { roomId: roomId }), { roomId }, { session });
 };

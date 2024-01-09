@@ -7,8 +7,8 @@ describe('User logout tests', () => {
   });
 
   test('Success', () => {
-    const res = requestUserCreate('haezera', 'hae@hotmail.com', 'Password123');
-    expect(requestUserLogout(res.sessionId)).toStrictEqual({});
+    const res = requestUserCreate('haezera', 'haeohreum09@hotmail.com', 'Password123');
+    expect(requestUserLogout(res.session)).toStrictEqual({});
   });
 
   test('No such session id in database', () => {
