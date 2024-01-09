@@ -1,7 +1,6 @@
 import { Connection } from 'mysql2';
 import { hashPassword } from '../password';
 import validator from 'validator';
-import HTTPError from 'http-errors';
 import { v4 as uuidv4 } from 'uuid';
 import { insertUser, insertSession, userInRoom } from '../sql';
 import { userDbResult } from '../interfaces';
@@ -13,9 +12,9 @@ export const userCreate = async (
   password: string
 ) => {
   if (!validator.isEmail(email)) {
-    throw HTTPError(400, 'Email is not a valid email.');
+    return { error: 'Email is not valid' };
   } else if (password.length < 8) {
-    throw HTTPError(400, 'Password is less then 8 characters.');
+    return { error: 'Password is too short' };
   }
 
   // Check if username is already in the database.
@@ -26,7 +25,7 @@ export const userCreate = async (
       throw new Error('Username already exists');
     }
   } catch (err) {
-    throw HTTPError(400, err);
+    return { error: err };
   }
 
   const hashedPw = hashPassword(password);
@@ -39,7 +38,7 @@ export const userCreate = async (
     (err: any, results: any) => {
       if (err) {
         console.log(err);
-        throw HTTPError(400, 'There has been an SQL error');
+        return { error: err };
       } else {
         console.log(results);
       }
@@ -52,7 +51,7 @@ export const userCreate = async (
     [session, username],
     (err: any, results: any) => {
       if (err) {
-        throw HTTPError(400, `There has been an SQL error: ${err}`);
+        return { error: err };
       } else {
         console.log(results);
       }

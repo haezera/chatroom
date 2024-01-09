@@ -12,6 +12,7 @@ import http from 'http';
 import { v4 as uuidv4 } from 'uuid';
 import { WebSocketServer } from 'ws';
 import { socket } from '../utils/interfaces';
+
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';
 dotenv.config();
@@ -73,13 +74,23 @@ app.get('/', (req: Request, res: Response) => {
 app.post('/v1/auth/user/create', async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
   const response = await userCreate(connection, username, email, password);
-  console.log(response);
+
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
   res.json(response);
 });
 
 app.get('/v1/auth/admin/sessions', async (req: Request, res: Response) => {
   const password = req.query.password as string;
   const response = await fetchSessions(connection, password);
+
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
 
   res.json(response);
 });
@@ -90,7 +101,6 @@ app.delete('/v1/auth/clear', (req: Request, res: Response) => {
 });
 
 // WEB SOCKETS
-
 wss.on('connection', (ws) => {
   const conn: socket = { id: '', websocket: null };
   conn.id = uuidv4();
