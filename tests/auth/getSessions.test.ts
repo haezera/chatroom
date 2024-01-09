@@ -8,7 +8,7 @@ describe('Get sessions test', () => {
   });
 
   test('Success', () => {
-    requestUserCreate('haezera', 'hae@hotmail.com', 'Password123');
+    requestUserCreate('haezera', 'haeohreum09@hotmail.com', 'Password123');
     const res: any = requestGetSessions('admin');
     expect(res.length).toBe(1);
   });
