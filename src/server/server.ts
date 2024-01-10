@@ -65,6 +65,14 @@ app.get('/index.js', (req: Request, res: Response) => {
   });
 });
 
+app.get('/styles.css', (req: Request, res: Response) => {
+  res.sendFile(path.resolve(__dirname, '../../public/styles.css'), {
+    headers: {
+      'Content-Type': 'text/css',
+    },
+  });
+});
+
 /// API ENDPOINTS
 
 app.get('/', (req: Request, res: Response) => {
