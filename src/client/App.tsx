@@ -5,11 +5,14 @@ import Loading from './components/Loading';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Window from './components/Window';
+import { AppStateProvider } from './AppState';
 
 const App = () => {
   console.log("rendering App");
   return (
-    <Window />
+    <AppStateProvider>
+      <Window />
+    </AppStateProvider>
   );
 };
 
