@@ -8,7 +8,7 @@ export function hashPassword(password: string): string {
 }
 
 // Checks if a entered password is the same as the hashed password
-export function checkPassword(password: string, hashedPassword: string): boolean {
+export function verifyPassword(password: string, hashedPassword: string): boolean {
   const isMatch = bcrypt.compareSync(password, hashedPassword);
   return isMatch;
 }

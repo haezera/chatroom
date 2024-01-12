@@ -15,6 +15,7 @@ import { setupSQL } from '../utils/setup';
 import { userCreate } from '../utils/auth/userCreate';
 import { fetchSessions } from '../utils/auth/getSessions';
 import { logoutUser } from '../utils/auth/userLogout';
+import { loginUser } from '../utils/auth/userLogin';
 
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';
@@ -100,8 +101,10 @@ app.delete('/v1/auth/user/logout', async (req: Request, res: Response) => {
   res.json(response);
 });
 
-app.delete('/v1/auth/user/login', (req: Request, res: Response) => {
+app.put('/v1/auth/user/login', async (req: Request, res: Response) => {
   const { email, password } = req.body;
+  const response = await loginUser(connection, email, password);
+  res.json(response);
 });
 
 app.get('/v1/auth/admin/sessions', async (req: Request, res: Response) => {

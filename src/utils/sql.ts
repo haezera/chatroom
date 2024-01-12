@@ -123,7 +123,12 @@ SELECT
 
 // Checks if a given password is correct within the database.
 export const checkPassword = `
-SELECT password FROM users WHERE id=?
+SELECT password FROM users WHERE email=?
+`;
+
+// Fetches a username given an email
+export const fetchUsername = `
+SELECT username FROM users WHERE email = ?
 `;
 
 // Pass in an id and a new password for the user.
