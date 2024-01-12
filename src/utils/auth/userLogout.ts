@@ -9,7 +9,7 @@ export const logoutUser = async (
   const res = await connection.promise().query(
     isSession, [session]
   ) as any;
-
+  console.log(session);
   if (res[0][0].element_exists === 0) {
     return { error: "The session doesn't exist" };
   }

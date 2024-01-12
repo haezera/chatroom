@@ -14,7 +14,7 @@ INSERT INTO users (
 // Insert a new session into the database.
 export const insertSession = `
 INSERT into sessions(
-    sessionId,
+    session,
     username
 ) VALUES (?, ?)
 `;
@@ -104,7 +104,7 @@ SELECT * FROM sessions;
 
 // Deletes a session from the sessions database (logout);
 export const deleteSession = `
-DELETE FROM sessions WHERE sessionId = ?
+DELETE FROM sessions WHERE session = ?
 `;
 
 // Checks if session exists in the database
@@ -114,13 +114,25 @@ SELECT
         WHEN EXISTS (
             SELECT 1
             FROM sessions
-            WHERE sessionId = ?
+            WHERE session = ?
         )
         THEN 1
         ELSE 0
     END AS element_exists;
 `;
 
+export const isSessionUsername = `
+SELECT
+    CASE
+        WHEN EXISTS (
+            SELECT 1
+            FROM sessions
+            WHERE username = ?
+        )
+        THEN 1
+        ELSE 0
+    END AS element_exists;
+`;
 // Checks if a given password is correct within the database.
 export const checkPassword = `
 SELECT password FROM users WHERE email=?

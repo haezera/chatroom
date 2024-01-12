@@ -92,7 +92,7 @@ app.post('/v1/auth/user/create', async (req: Request, res: Response) => {
 app.delete('/v1/auth/user/logout', async (req: Request, res: Response) => {
   const session = req.headers.session as string;
   const response = await logoutUser(connection, session);
-
+  console.log(response);
   if ('error' in response) {
     res.status(400).json(response);
     return;
@@ -104,6 +104,12 @@ app.delete('/v1/auth/user/logout', async (req: Request, res: Response) => {
 app.put('/v1/auth/user/login', async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const response = await loginUser(connection, email, password);
+  console.log(response);
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
   res.json(response);
 });
 
