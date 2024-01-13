@@ -18,7 +18,7 @@ const Login = () => {
   const setEmailInput : React.Dispatch<React.SetStateAction<string>>= emailInputBundle[1];
 
   const passwordInputBundle = React.useState<string>("");
-  let passwordInput : string = emailInputBundle[0];
+  let passwordInput : string = passwordInputBundle[0];
   const setPasswordInput : React.Dispatch<React.SetStateAction<string>>= passwordInputBundle[1];
 
   /// Functions
