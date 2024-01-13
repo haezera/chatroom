@@ -1,5 +1,4 @@
 import { Connection } from 'mysql2';
-import HTTPError from 'http-errors';
 import { getSessions } from '../sql';
 
 export const fetchSessions = async (

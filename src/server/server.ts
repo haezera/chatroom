@@ -1,8 +1,5 @@
 // IMPORTS
 import express, { json, Request, Response } from 'express';
-import { setupSQL } from '../utils/setup';
-import { userCreate } from '../utils/auth/userCreate';
-import { fetchSessions } from '../utils/auth/getSessions';
 import mysql from 'mysql2';
 import path from 'path';
 import cors from 'cors';
@@ -12,6 +9,12 @@ import http from 'http';
 import { v4 as uuidv4 } from 'uuid';
 import { WebSocketServer } from 'ws';
 import { socket } from '../utils/interfaces';
+
+// FUNCTION IMPORTS
+import { setupSQL } from '../utils/setup';
+import { userCreate } from '../utils/auth/userCreate';
+import { fetchSessions } from '../utils/auth/getSessions';
+import { logoutUser } from '../utils/auth/userLogout';
 
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';
@@ -86,6 +89,8 @@ app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'You have accessed the root!' });
 });
 
+// AUTH ENDPOINTS
+
 app.post('/v1/auth/user/create', async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
   const response = await userCreate(connection, username, email, password);
@@ -98,8 +103,24 @@ app.post('/v1/auth/user/create', async (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.delete('/v1/auth/user/logout', async (req: Request, res: Response) => {
+  const session = req.headers.session as string;
+  const response = await logoutUser(connection, session);
+
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
+  res.json(response);
+});
+
+app.delete('/v1/auth/user/login', (req: Request, res: Response) => {
+  const { email, password } = req.body;
+});
+
 app.get('/v1/auth/admin/sessions', async (req: Request, res: Response) => {
-  const password = req.query.password as string;
+  const password = req.headers.password as string;
   const response = await fetchSessions(connection, password);
 
   if ('error' in response) {

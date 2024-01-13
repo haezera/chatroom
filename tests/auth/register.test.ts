@@ -10,7 +10,7 @@ describe('User creation tests', () => {
       'haezera',
       'haeohreum09@hotmail.com',
       'Password123'
-    )).toStrictEqual({ sessionId: expect.any(String) });
+    )).toStrictEqual({ session: expect.any(String) });
   });
 
   test('Email is not a valid email', () => {

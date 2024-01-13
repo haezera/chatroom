@@ -102,6 +102,25 @@ export const getSessions = `
 SELECT * FROM sessions;
 `;
 
+// Deletes a session from the sessions database (logout);
+export const deleteSession = `
+DELETE FROM sessions WHERE sessionId = ?
+`;
+
+// Checks if session exists in the database
+export const isSession = `
+SELECT
+    CASE
+        WHEN EXISTS (
+            SELECT 1
+            FROM sessions
+            WHERE sessionId = ?
+        )
+        THEN 1
+        ELSE 0
+    END AS element_exists;
+`;
+
 // Checks if a given password is correct within the database.
 export const checkPassword = `
 SELECT password FROM users WHERE id=?
