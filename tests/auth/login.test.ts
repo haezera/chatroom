@@ -9,12 +9,12 @@ describe('User login tests', () => {
   });
 
   test('Success', () => {
-    requestUserLogout(res.sessionId);
+    requestUserLogout(res.session);
     expect(requestUserLogin(
       'hae@hotmail.com',
       'Password123')
     ).toStrictEqual(
-      { sessionId: expect.any(String) }
+      { session: expect.any(String) }
     );
   });
 
