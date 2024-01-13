@@ -95,6 +95,16 @@ const Login = () => {
           })}
         </form>
       </div>
+      <div>
+        <p>Don't have an account?</p>
+        <a
+          href=""
+          onClick={(event) => {
+            event.preventDefault();
+            setView("register");
+          }}
+        >Register</a>
+      </div>
     </div>
   );
 };

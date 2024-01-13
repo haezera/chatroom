@@ -4,6 +4,7 @@ import React from 'react';
 import Loading from './Loading';
 import Login from './Login';
 import Dashboard from './Dashboard';
+import Register from './Register';
 
 import { AppState } from '../AppState';
 
@@ -17,8 +18,7 @@ const Window = () => {
     const sessionId = window.localStorage.getItem("session");
     if (sessionId === null) {
       setView("login")
-      // TODO: uncomment later
-      // return;
+      return;
     }
 
     fetch(
@@ -53,6 +53,8 @@ const Window = () => {
             return <Dashboard />
           case "loading":
             return <Loading />
+          case "register":
+            return <Register />
         }
       })()}
     </div>
