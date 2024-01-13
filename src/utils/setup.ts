@@ -65,7 +65,7 @@ export const setupSQL = (connection: any) => {
 
   connection.query(
     `CREATE TABLE IF NOT EXISTS sessions(
-      sessionId VARCHAR(255),
+      session VARCHAR(255),
       username VARCHAR(255)
     )`,
     (err: any, results: any) => {
