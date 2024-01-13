@@ -21,7 +21,7 @@ responses:
 200 When:
 - OK
 Example response:
-{ "sessionId": "12345678" }
+{ "session": "12345678" }
 
 400 When:
 - Email is already being used
@@ -42,7 +42,7 @@ response:
 200 When:
 - OK
 Example response:
-{ "token": "12345678" }
+{ "session": "12345678" }
 
 400 When:
 - Email is an invalid email
@@ -53,7 +53,7 @@ Example response:
 /v1/auth/user/logout DELETE
 desc: logs out a user from the chatroom website
 headers:
-"sessionId": "123456789"
+"session": "123456789"
 
 response:
 200 When:
@@ -105,7 +105,7 @@ ROOM ROUTES
 /v1/room/create POST
 desc: create a new chatroom
 headers:
-"sessionId": "123456789"
+"session": "123456789"
 example parameters:
 {
     "password": "This is optional",
@@ -153,7 +153,7 @@ Example response:
 /v1/room/{roomId}/join PUT
 desc: allow a user to join a room 
 headers: 
-"sessionId": "123456789"
+"session": "123456789"
 example parameters:
 
 response:
@@ -173,7 +173,7 @@ Example response:
 /v1/room/{roomId}/leave DELETE
 desc: allow a user to leave a room
 headers:
-"sessionId": "123456789"
+"session": "123456789"
 
 response:
 200 When:

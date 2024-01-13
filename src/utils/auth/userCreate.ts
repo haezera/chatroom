@@ -11,6 +11,10 @@ export const userCreate = async (
   email: string,
   password: string
 ) => {
+  // TODO: remove
+  console.log("PASSWORD IS THIS!!!");
+  console.log(password);
+
   if (!validator.isEmail(email)) {
     return { error: 'Email is not valid' };
   } else if (password.length < 8) {

@@ -69,6 +69,21 @@ app.get('/index.js', (req: Request, res: Response) => {
   });
 });
 
+app.get('/styles.css', (req: Request, res: Response) => {
+  res.sendFile(path.resolve(__dirname, '../../public/styles.css'), {
+    headers: {
+      'Content-Type': 'text/css',
+    },
+  });
+});
+
+
+/// placeholder
+
+app.get('/v1/auth/session/validate', (req: Request, res: Response) => {
+  res.json({valid: false});
+});
+
 /// API ENDPOINTS
 
 app.get('/', (req: Request, res: Response) => {

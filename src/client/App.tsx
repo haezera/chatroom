@@ -1,18 +1,19 @@
 'use strict';
 
-import React from "react";
+import React from 'react';
+import Loading from './components/Loading';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
+import Window from './components/Window';
+import { AppStateProvider } from './AppState';
 
-const LikeButton = () => {
-  let a: number = 69;
-  console.log(a);
-
+const App = () => {
+  console.log("rendering App");
   return (
-    <button 
-      onClick={() => {window.alert("YIPPEE");
-    }}>
-      Press to Like
-    </button>
+    <AppStateProvider>
+      <Window />
+    </AppStateProvider>
   );
 };
 
-export default LikeButton;
+export default App;

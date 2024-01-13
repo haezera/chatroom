@@ -1,4 +1,4 @@
-import request, { HttpVerb } from 'sync-request-curl';
+import request, { HttpVerb } from 'sync-request';
 import { IncomingHttpHeaders } from 'http';
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';

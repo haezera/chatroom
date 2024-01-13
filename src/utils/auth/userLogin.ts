@@ -8,6 +8,12 @@ export const loginUser = async (
   email: string,
   password: string
 ) => {
+  // TODO: remove
+  console.log("PASSWORD IS THIS!!!");
+  console.log(password);
+  console.log("HUHH WHAT")
+
+
   // Fetch encrypted password
   const pw = await connection.promise().query(
     checkPassword, [email]
