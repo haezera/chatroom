@@ -4,11 +4,14 @@
 // ~ Jeff
 
 import React from 'react';
+import { AppState } from '../AppState';
 
 const Login = () => {
   console.log("rendering Login");
 
   /// States
+
+  const {view, setView} = React.useContext(AppState);
 
   const emailInputBundle = React.useState<string>("");
   let emailInput : string = emailInputBundle[0];
@@ -41,16 +44,22 @@ const Login = () => {
         if (rawResponse.status == 200) {
           // upon successful login
           const session = jsonResponse.session;
-
+          window.localStorage.setItem("session", session);
+          console.log("successful login");
+          console.log("session: ", session);
+          setView("dashboard");
         } else {
           // upon failed login
-
+          console.log("login failed");
+          window.alert("login failed");
         }
       }).catch((err) => {
         console.error(err);
+        window.alert("login failed due to error");
       });
     }).catch((err) => {
       console.error(err);
+      window.alert("login failed due to error");
     });
   }
 
@@ -80,6 +89,7 @@ const Login = () => {
             value: 'Submit',
             className: 'login-submit-button',
             onClick: (event : React.MouseEvent<HTMLButtonElement>) => {
+              event.preventDefault();
               handleSubmit();
             }
           })}

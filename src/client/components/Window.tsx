@@ -14,10 +14,11 @@ const Window = () => {
 
   // determine whether to display a dashboard or a login page
   React.useEffect(() => {
-    const sessionId = window.localStorage.getItem("sessionId");
+    const sessionId = window.localStorage.getItem("session");
     if (sessionId === null) {
       setView("login")
-      return;
+      // TODO: uncomment later
+      // return;
     }
 
     fetch(
@@ -31,7 +32,7 @@ const Window = () => {
         if (parsedResponse.valid === true) {
           setView("dashboard")
         } else {
-          window.localStorage.removeItem("sessionId");
+          window.localStorage.removeItem("session");
           setView("login");
         }
       }).catch((error) => {
