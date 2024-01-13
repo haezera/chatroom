@@ -77,7 +77,7 @@ app.get('/styles.css', (req: Request, res: Response) => {
 /// placeholder
 
 app.get('/v1/auth/session/validate', (req: Request, res: Response) => {
-  res.json({valid: true});
+  res.json({valid: false});
 });
 
 /// API ENDPOINTS
