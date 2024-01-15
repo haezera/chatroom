@@ -16,27 +16,18 @@ describe('Room leave tests', () => {
   });
 
   test('Success', () => {
-    expect(requestRoomLeave(user.session, roomId.room)).toBe({});
+    expect(requestRoomLeave(user.session)).toStrictEqual({});
   });
 
   test('Session does not exist in database', () => {
     expect(requestRoomLeave(
-      '3d6116e8-4cd6-4755-b00e-c2aa41aab985',
-      roomId.room
-    )).toStrictEqual(400);
-  });
-
-  test('Room does not exist in database', () => {
-    expect(requestRoomLeave(
-      user.session,
       '3d6116e8-4cd6-4755-b00e-c2aa41aab985'
     )).toStrictEqual(400);
   });
 
   test('Session does not conform to UUID standards', () => {
     expect(requestRoomLeave(
-      '1234',
-      roomId.room
+      '1234'
     )).toStrictEqual(401);
   });
 });
