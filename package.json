@@ -34,7 +34,7 @@
     "test": "jest",
     "start": "ts-node src/server/server.ts",
     "tsc": "tsc --project tsconfig.json",
-    "lint": "eslint src/**/**.ts",
+    "lint": "eslint src/**/**/**.ts",
     "lint-fix": "eslint --fix src/**/**.ts",
     "lint-test": "eslint tests/**/**.ts",
     "build": "webpack && cp src/client/index.html public && cp src/client/styles.css public"

@@ -12,7 +12,7 @@ export const userCreate = async (
   password: string
 ) => {
   // TODO: remove
-  console.log("PASSWORD IS THIS!!!");
+  console.log('PASSWORD IS THIS!!!');
   console.log(password);
 
   if (!validator.isEmail(email)) {

@@ -6,7 +6,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import errorHandler from 'middleware-http-errors';
 import http from 'http';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4, validate as isUUID } from 'uuid';
 import { WebSocketServer } from 'ws';
 import { socket } from '../utils/interfaces';
 
@@ -77,11 +77,10 @@ app.get('/styles.css', (req: Request, res: Response) => {
   });
 });
 
-
 /// placeholder
 
 app.get('/v1/auth/session/validate', (req: Request, res: Response) => {
-  res.json({valid: false});
+  res.json({ valid: false });
 });
 
 /// API ENDPOINTS
@@ -106,6 +105,11 @@ app.post('/v1/auth/user/create', async (req: Request, res: Response) => {
 
 app.delete('/v1/auth/user/logout', async (req: Request, res: Response) => {
   const session = req.headers.session as string;
+
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Inputted session is not UUID' });
+  }
+
   const response = await logoutUser(connection, session);
   console.log(response);
   if ('error' in response) {
