@@ -18,9 +18,11 @@ import { logoutUser } from '../utils/auth/userLogout';
 import { loginUser } from '../utils/auth/userLogin';
 import { createRoom } from '../utils/rooms/roomCreate';
 import { roomDelete } from '../utils/rooms/roomDelete';
+import { roomLeave } from '../utils/rooms/roomLeave';
 
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';
+import { roomJoin } from '../utils/rooms/roomJoin';
 dotenv.config();
 
 const PORT: string = process.env.APP_PORT as string;
@@ -110,6 +112,7 @@ app.delete('/v1/auth/user/logout', async (req: Request, res: Response) => {
 
   if (!isUUID(session)) {
     res.status(401).json({ error: 'Inputted session is not UUID' });
+    return;
   }
 
   const response = await logoutUser(connection, session);
@@ -184,6 +187,44 @@ app.delete('/v1/room/delete', async (req: Request, res: Response) => {
 
   const response = await roomDelete(connection, room, session);
   console.log(response);
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
+  res.json(response);
+});
+
+app.put('/v1/room/join', async (req: Request, res: Response) => {
+  const session = req.headers.session as string;
+
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Session does not conform to UUID' });
+    return;
+  }
+
+  const { room } = req.body;
+
+  const response = await roomJoin(connection, room, session);
+
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
+  res.json(response);
+});
+
+app.delete('/v1/room/leave', async (req: Request, res: Response) => {
+  const session = req.headers.session as string;
+
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Session does not conform to UUID' });
+    return;
+  }
+
+  const response = await roomLeave(connection, session);
+
   if ('error' in response) {
     res.status(400).json(response);
     return;

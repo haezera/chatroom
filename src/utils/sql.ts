@@ -226,6 +226,20 @@ SET password=?
 WHERE id=?
 `;
 
+// Update a user into a new room
+export const joinRoom = `
+UPDATE users
+SET room = ?
+WHERE username = ?
+`;
+
+// Update a user to leave a room
+export const leaveRoom = `
+UPDATE users
+SET room = null
+WHERE username = ?
+`;
+
 // Pass in an id and a new email for the user.
 //
 // connection.query(

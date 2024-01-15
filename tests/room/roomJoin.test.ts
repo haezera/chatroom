@@ -14,7 +14,7 @@ describe('Room join tests', () => {
   });
 
   test('Success', () => {
-    expect(requestRoomJoin(user.session, roomId.room)).toBe({});
+    expect(requestRoomJoin(user.session, roomId.room)).toStrictEqual({});
   });
 
   test('Session does not exist in database', () => {
