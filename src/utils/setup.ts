@@ -38,7 +38,7 @@ export const setupSQL = (connection: any) => {
       username VARCHAR(255),
       password VARCHAR(255),
       email VARCHAR(255),
-      roomId VARCHAR(255)
+      room VARCHAR(255)
     )`,
     (err: any, results: any) => {
       if (err) {
@@ -51,8 +51,10 @@ export const setupSQL = (connection: any) => {
 
   connection.query(
     `CREATE TABLE IF NOT EXISTS rooms(
-      roomId VARCHAR(255),
-      owner VARCHAR(255)
+      room VARCHAR(255),
+      owner VARCHAR(255),
+      roomName VARCHAR(255),
+      password VARCHAR(255)
     )`,
     (err: any, results: any) => {
       if (err) {

@@ -16,6 +16,7 @@ import { userCreate } from '../utils/auth/userCreate';
 import { fetchSessions } from '../utils/auth/getSessions';
 import { logoutUser } from '../utils/auth/userLogout';
 import { loginUser } from '../utils/auth/userLogin';
+import { createRoom } from '../utils/rooms/roomCreate';
 
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';
@@ -147,6 +148,26 @@ app.get('/v1/auth/admin/sessions', async (req: Request, res: Response) => {
 app.delete('/v1/auth/clear', (req: Request, res: Response) => {
   setupSQL(connection); // Just resets the database
   res.json({});
+});
+
+// ROOM ENDPOINTS
+
+app.post('/v1/room/create', async (req: Request, res: Response) => {
+  const session = req.headers.session as string;
+
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Session does not conform to UUID' });
+  }
+
+  const { password, name } = req.body;
+  const response = await createRoom(connection, name, session, password);
+
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
+  res.json(response);
 });
 
 // WEB SOCKETS

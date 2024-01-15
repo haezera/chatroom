@@ -7,7 +7,7 @@ INSERT INTO users (
     username,
     email,
     password,
-    roomId
+    room
 ) VALUES (?, ?, ?, ?)
 `;
 
@@ -22,9 +22,46 @@ INSERT into sessions(
 //  Insert a new room into the database.
 export const insertRoom = `
 INSERT INTO rooms(
-    room_id,
-    username
-) VALUES (?, ?, ?)
+    room,
+    roomName,
+    password,
+    owner
+) VALUES (?, ?, ?, ?)
+`;
+
+// Update user room
+export const updateUserRoom = `
+UPDATE users
+SET room = ?
+WHERE username = ?
+`;
+
+// Duplicate room name exists
+export const roomNameExists = `
+SELECT
+    CASE
+        WHEN EXISTS (
+            SELECT 1
+            FROM rooms
+            WHERE roomName = ?
+        )
+        THEN 1
+        ELSE 0
+    END AS element_exists;
+`;
+
+// Owner already has another room
+export const ownerHasRoom = `
+SELECT
+    CASE
+        WHEN EXISTS (
+            SELECT 1
+            FROM rooms
+            WHERE owner = ?
+        )
+        THEN 1
+        ELSE 0
+    END AS element_exists;
 `;
 
 // Returns 1 if a user is in a room, and 0 if they aren't.
@@ -141,6 +178,11 @@ SELECT password FROM users WHERE email=?
 // Fetches a username given an email
 export const fetchUsername = `
 SELECT username FROM users WHERE email = ?
+`;
+
+// Fetches a username given a session
+export const fetchUsernameSession = `
+SELECT username FROM sessions WHERE session = ?
 `;
 
 // Pass in an id and a new password for the user.
