@@ -5,7 +5,6 @@ import {
   insertRoom,
   roomNameExists,
   ownerHasRoom,
-  fetchUsernameSession,
   isSession
 } from '../sql';
 
@@ -24,13 +23,8 @@ export const createRoom = async (
     return { error: 'Session does not exist' };
   }
 
-  // Check if owner already owns a room
-  const username = await connection.promise().query(
-    fetchUsernameSession, [session]
-  );
-  const owner = username[0][0].username;
   const duplicateOwner = await connection.promise().query(
-    ownerHasRoom, [owner]
+    ownerHasRoom, [session]
   );
 
   if (duplicateOwner[0][0].element_exists === 1) {
@@ -50,7 +44,7 @@ export const createRoom = async (
   const roomId = uuid();
   const hashedPassword = hashPassword(password);
   await connection.promise().query(
-    insertRoom, [roomId, roomName, hashedPassword, owner]
+    insertRoom, [roomId, roomName, hashedPassword, session]
   );
 
   return { room: roomId };

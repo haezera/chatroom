@@ -64,8 +64,8 @@ export const requestRoomCreate = (session: string, password: string, name: strin
   return requestHelper('POST', '/v1/room/create', { password, name }, { session });
 };
 
-export const requestRoomDelete = (session: string, roomId: string) => {
-  return requestHelper('DELETE', '/v1/room/delete', { roomId }, { session });
+export const requestRoomDelete = (session: string, room: string) => {
+  return requestHelper('DELETE', '/v1/room/delete', { room }, { session });
 };
 
 export const requestRoomJoin = (session: string, roomId: string) => {

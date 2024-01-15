@@ -131,7 +131,7 @@ SELECT id FROM users WHERE email=?
 //    }
 // )
 export const fetchRoomId = `
-SELECT room_id FROM users WHERE username=?
+SELECT room FROM users WHERE username=?
 `;
 
 // Fetches all the sessions
@@ -139,9 +139,19 @@ export const getSessions = `
 SELECT * FROM sessions;
 `;
 
+// Fetches the owner of a room
+export const getOwnerOfRoom = `
+SELECT owner FROM rooms WHERE room = ?
+`;
+
 // Deletes a session from the sessions database (logout);
 export const deleteSession = `
 DELETE FROM sessions WHERE session = ?
+`;
+
+// Delete a room from the rooms database (close a room);
+export const deleteRoom = `
+DELETE FROM rooms WHERE owner = ?
 `;
 
 // Checks if session exists in the database
@@ -156,6 +166,20 @@ SELECT
         THEN 1
         ELSE 0
     END AS element_exists;
+`;
+
+// Checks if room exists in the database
+export const isRoom = `
+SELECT
+  CASE
+    WHEN EXISTS (
+        SELECT 1 
+        FROM rooms
+        WHERE room = ?
+    )
+    THEN 1
+    ELSE 0
+  END AS element_exists;
 `;
 
 export const isSessionUsername = `

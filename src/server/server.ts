@@ -17,6 +17,7 @@ import { fetchSessions } from '../utils/auth/getSessions';
 import { logoutUser } from '../utils/auth/userLogout';
 import { loginUser } from '../utils/auth/userLogin';
 import { createRoom } from '../utils/rooms/roomCreate';
+import { roomDelete } from '../utils/rooms/roomDelete';
 
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';
@@ -157,11 +158,32 @@ app.post('/v1/room/create', async (req: Request, res: Response) => {
 
   if (!isUUID(session)) {
     res.status(401).json({ error: 'Session does not conform to UUID' });
+    return;
   }
 
   const { password, name } = req.body;
   const response = await createRoom(connection, name, session, password);
 
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
+  res.json(response);
+});
+
+app.delete('/v1/room/delete', async (req: Request, res: Response) => {
+  const session = req.headers.session as string;
+  console.log(session);
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Session does not conform to UUID' });
+    return;
+  }
+
+  const room = req.query.room as string;
+
+  const response = await roomDelete(connection, room, session);
+  console.log(response);
   if ('error' in response) {
     res.status(400).json(response);
     return;

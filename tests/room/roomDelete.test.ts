@@ -16,7 +16,7 @@ describe('Room delete tests', () => {
   });
 
   test('Success', () => {
-    expect(requestRoomDelete(user.session, roomId.room)).toBe({});
+    expect(requestRoomDelete(user.session, roomId.room)).toStrictEqual({});
   });
 
   test('Session does not exist in database', () => {
