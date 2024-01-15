@@ -175,10 +175,6 @@ Example response:
 desc: allow a user to leave a room
 headers:
 "session": "123456789"
-body:
-{
-    room: "1321321312"
-}
 
 response:
 200 When:
