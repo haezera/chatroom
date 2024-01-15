@@ -16,6 +16,6 @@ describe('User logout tests', () => {
   });
 
   test('Token is not valid', () => {
-    expect(requestUserLogout('1234')).toStrictEqual(400);
+    expect(requestUserLogout('1234')).toStrictEqual(401);
   });
 });

@@ -12,7 +12,8 @@
   "parserOptions": {
     "ecmaVersion": 2022,
     "ecmaFeatures": {
-      "jsx": true
+      "jsx": true,
+      "tsx": true
     },
     "sourceType": "module"
   },

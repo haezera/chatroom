@@ -6,7 +6,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import errorHandler from 'middleware-http-errors';
 import http from 'http';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4, validate as isUUID } from 'uuid';
 import { WebSocketServer } from 'ws';
 import { socket } from '../utils/interfaces';
 
@@ -16,6 +16,8 @@ import { userCreate } from '../utils/auth/userCreate';
 import { fetchSessions } from '../utils/auth/getSessions';
 import { logoutUser } from '../utils/auth/userLogout';
 import { loginUser } from '../utils/auth/userLogin';
+import { createRoom } from '../utils/rooms/roomCreate';
+import { roomDelete } from '../utils/rooms/roomDelete';
 
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';
@@ -77,11 +79,10 @@ app.get('/styles.css', (req: Request, res: Response) => {
   });
 });
 
-
 /// placeholder
 
 app.get('/v1/auth/session/validate', (req: Request, res: Response) => {
-  res.json({valid: false});
+  res.json({ valid: false });
 });
 
 /// API ENDPOINTS
@@ -106,6 +107,11 @@ app.post('/v1/auth/user/create', async (req: Request, res: Response) => {
 
 app.delete('/v1/auth/user/logout', async (req: Request, res: Response) => {
   const session = req.headers.session as string;
+
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Inputted session is not UUID' });
+  }
+
   const response = await logoutUser(connection, session);
   console.log(response);
   if ('error' in response) {
@@ -143,6 +149,47 @@ app.get('/v1/auth/admin/sessions', async (req: Request, res: Response) => {
 app.delete('/v1/auth/clear', (req: Request, res: Response) => {
   setupSQL(connection); // Just resets the database
   res.json({});
+});
+
+// ROOM ENDPOINTS
+
+app.post('/v1/room/create', async (req: Request, res: Response) => {
+  const session = req.headers.session as string;
+
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Session does not conform to UUID' });
+    return;
+  }
+
+  const { password, name } = req.body;
+  const response = await createRoom(connection, name, session, password);
+
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
+  res.json(response);
+});
+
+app.delete('/v1/room/delete', async (req: Request, res: Response) => {
+  const session = req.headers.session as string;
+  console.log(session);
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Session does not conform to UUID' });
+    return;
+  }
+
+  const room = req.query.room as string;
+
+  const response = await roomDelete(connection, room, session);
+  console.log(response);
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
+  res.json(response);
 });
 
 // WEB SOCKETS

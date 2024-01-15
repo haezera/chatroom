@@ -60,14 +60,18 @@ export const requestGetSessions = (password: string) => {
   return requestHelper('GET', '/v1/auth/admin/sessions', { }, { password });
 };
 
-export const requestRoomCreate = (session: string, password?: string, name?: string) => {
+export const requestRoomCreate = (session: string, password: string, name: string) => {
   return requestHelper('POST', '/v1/room/create', { password, name }, { session });
 };
 
-export const requestRoomDelete = (session: string, roomId: string) => {
-  return requestHelper('DELETE', '/v1/room/delete', { roomId }, { session });
+export const requestRoomDelete = (session: string, room: string) => {
+  return requestHelper('DELETE', '/v1/room/delete', { room }, { session });
 };
 
 export const requestRoomJoin = (session: string, roomId: string) => {
   return requestHelper('PUT', parseRouteParams('/v1/room/:roomId/join', { roomId: roomId }), { roomId }, { session });
+};
+
+export const requestRoomLeave = (session: string, roomId: string) => {
+  return requestHelper('DELETE', parseRouteParams('/v1/room/:roomId/leave', { roomId: roomId }), { roomId }, { session });
 };
