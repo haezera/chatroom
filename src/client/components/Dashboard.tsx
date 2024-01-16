@@ -1,18 +1,27 @@
 'use strict';
 
 import React from 'react';
-import { AppState } from '../AppState';
+import { MessengerContextProvider } from './MessengerContext';
+import Messenger from './Messenger';
+
 import Logout from './Logout';
 
 const Dashboard = () => {
+
   console.log("rendering Dashboard");
   
-  const {view, setView} = React.useContext(AppState);
+
+  /// Return value
 
   return (
     <div>
       <h1>Dashboard</h1>
       <Logout />
+      <div>
+        <MessengerContextProvider>
+          <Messenger />
+        </MessengerContextProvider>
+      </div>
     </div>
   );
 };

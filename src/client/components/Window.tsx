@@ -15,6 +15,7 @@ const Window = () => {
 
   // determine whether to display a dashboard or a login page
   React.useEffect(() => {
+    console.log("running session check");
     const sessionId = window.localStorage.getItem("session");
     if (sessionId === null) {
       setView("login")

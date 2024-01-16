@@ -147,17 +147,19 @@ app.delete('/v1/auth/clear', (req: Request, res: Response) => {
 
 // WEB SOCKETS
 wss.on('connection', (ws) => {
-  const conn: socket = { id: '', websocket: null };
-  conn.id = uuidv4();
-  conn.websocket = ws;
-  connections.push(conn);
+  console.log("websocket connection!");
+
+  // const conn: socket = { id: '', websocket: null };
+  // conn.id = uuidv4();
+  // conn.websocket = ws;
+  // connections.push(conn);
 
   // Send out messages to everyone
   ws.on('message', (msg) => {
     console.log('received message:', msg.toString());
-    for (const conns of connections) {
-      conns.send(msg.toString());
-    }
+    // for (const conns of connections) {
+    //   conns.send(msg.toString());
+    // }
   });
 });
 
