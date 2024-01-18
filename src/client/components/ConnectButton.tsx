@@ -15,11 +15,19 @@ const ConnectButton = () => {
     socket.onopen = (event) => {
       console.log("websocket is open");
 
+      // TODO: bring up in a meeting
       // some custom handshake thing
       socket.send(window.localStorage.getItem("session"));
-      // setMessengerState({...messengerState, socket: socket});
+      
+      // TODO: discuss this and its consequences
+      // I can't use the spread operator inside for some reason
+      setMessengerState({
+        roomId: messengerState.roomId,
+        messages: messengerState.messages,
+        socket: socket,
+      });
+
       console.log(messengerState);
-      setMessengerState("meow");
     };
 
     // socket.onmessage = (msg) => {

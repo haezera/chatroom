@@ -106,7 +106,7 @@ const Login = () => {
         >Register</a>
       </div>
 
-      <button onClick={() => {setView("dashboard")}}>Debug Button</button>
+      {/* <button onClick={() => {setView("dashboard")}}>Debug Button</button> */}
     </div>
   );
 };

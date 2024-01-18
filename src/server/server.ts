@@ -167,7 +167,7 @@ wss.on('connection', (ws) => {
 
 app.use(errorHandler());
 
-app.listen(parseInt(PORT), HOST, () => {
+server.listen(parseInt(PORT), HOST, () => {
   // DO NOT CHANGE THIS LINE
   console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
 });

@@ -15,7 +15,8 @@ const Messenger = () => {
       <RoomSelector />
       {
         (() => {
-          if (messengerState.roomId == null) {
+          // TODO: change != into ==
+          if (messengerState.roomId != null) {
             return (
               <div>
                 <p>Join a room first</p>

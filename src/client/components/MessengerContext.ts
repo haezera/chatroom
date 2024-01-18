@@ -6,6 +6,10 @@ export interface Message {
   content: string;
 };
 
+// WARNING
+// Due to some issues with using the spread operator when
+// setting a state, this interface cannot be modified without
+// making modifications in ConnectButton.tsx
 interface MessengerStateInterface {
   roomId: string;
   socket: WebSocket;
