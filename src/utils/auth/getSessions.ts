@@ -11,5 +11,6 @@ export const fetchSessions = async (
   }
 
   const res = await connection.promise().query(getSessions);
+  console.log(res);
   return res[0];
 };

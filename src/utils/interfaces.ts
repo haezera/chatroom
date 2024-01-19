@@ -8,3 +8,13 @@ export interface socket {
 export interface userDbResult {
   element_exists: number
 }
+
+export interface pairing {
+  websocket: WebSocket;
+  session: string;
+}
+
+export interface roomEvent {
+  room: string;
+  session: string;
+}

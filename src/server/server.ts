@@ -8,8 +8,8 @@ import errorHandler from 'middleware-http-errors';
 import http from 'http';
 import { v4 as uuidv4, validate as isUUID } from 'uuid';
 import { WebSocketServer } from 'ws';
-import { socket } from '../utils/interfaces';
-
+import { pairing, socket } from '../utils/interfaces';
+import { WebSocket } from 'ws';
 // FUN  CTION IMPORTS
 import { setupSQL } from '../utils/setup';
 import { userCreate } from '../utils/auth/userCreate';
@@ -23,6 +23,7 @@ import { roomLeave } from '../utils/rooms/roomLeave';
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';
 import { roomJoin } from '../utils/rooms/roomJoin';
+import { fetchRoomSession, fetchUserRooms } from '../utils/sql';
 dotenv.config();
 
 const PORT: string = process.env.APP_PORT as string;
@@ -140,7 +141,6 @@ app.put('/v1/auth/user/login', async (req: Request, res: Response) => {
 app.get('/v1/auth/admin/sessions', async (req: Request, res: Response) => {
   const password = req.headers.password as string;
   const response = await fetchSessions(connection, password);
-
   if ('error' in response) {
     res.status(400).json(response);
     return;
@@ -233,6 +233,9 @@ app.delete('/v1/room/leave', async (req: Request, res: Response) => {
   res.json(response);
 });
 
+const WSsession = new Map<WebSocket, string>();
+const sessionWS = new Map<string, WebSocket>();
+
 // WEB SOCKETS
 wss.on('connection', (ws) => {
   const conn: socket = { id: '', websocket: null };
@@ -241,11 +244,39 @@ wss.on('connection', (ws) => {
   connections.push(conn);
 
   // Send out messages to everyone
-  ws.on('message', (msg) => {
-    console.log('received message:', msg.toString());
-    for (const conns of connections) {
-      conns.send(msg.toString());
+  // This will need serious debugging btw - Hae
+  ws.on('message', async (msg) => {
+    // Find the room id of the current user
+    const session = WSsession.get(ws);
+    // Now need to find the room of this person
+    const res = await connection.promise().query(
+      fetchRoomSession, [session]
+    );
+
+    const room = res[0][0].room;
+
+    // Now fetch a list of the people in the same room
+    const users = await connection.promise().query(
+      fetchUserRooms, [room]
+    )[0];
+
+    const wsOfUsers: WebSocket[] = [];
+    for (const i of users) {
+      wsOfUsers.push(sessionWS.get(i.session));
     }
+
+    // Now emit messsages
+    for (const i of wsOfUsers) {
+      i.send(msg.toString());
+    }
+  });
+
+  // Pairing event
+  ws.on('pair', (data: pairing) => {
+    console.log('received pairing data:', data);
+    WSsession.set(data.websocket, data.session);
+    sessionWS.set(data.session, data.websocket);
+    // Now the pairing exists within the database.
   });
 });
 
