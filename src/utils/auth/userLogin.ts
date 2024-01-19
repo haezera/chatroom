@@ -1,4 +1,4 @@
-import { insertSession, checkPassword, fetchUsername, isSessionUsername } from '../sql';
+import { insertSession, checkPassword, fetchUsername, isSessionUsername, updateUserSession } from '../sql';
 import { Connection } from 'mysql2/typings/mysql/lib/Connection';
 import { verifyPassword } from '../password';
 import { v4 as uuid } from 'uuid';
@@ -8,11 +8,6 @@ export const loginUser = async (
   email: string,
   password: string
 ) => {
-  // TODO: remove
-  console.log('PASSWORD IS THIS!!!');
-  console.log(password);
-  console.log('HUHH WHAT');
-
   // Fetch encrypted password
   const pw = await connection.promise().query(
     checkPassword, [email]
@@ -44,6 +39,10 @@ export const loginUser = async (
 
   await connection.promise().query(
     insertSession, [newSession, username[0][0].username]
+  );
+
+  await connection.promise().query(
+    updateUserSession, [newSession, email]
   );
 
   return { session: newSession };

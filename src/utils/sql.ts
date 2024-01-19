@@ -6,9 +6,10 @@ export const insertUser = `
 INSERT INTO users (
     username,
     email,
+    session,
     password,
     room
-) VALUES (?, ?, ?, ?)
+) VALUES (?, ?, ?, ?, ?)
 `;
 
 // Insert a new session into the database.
@@ -17,6 +18,13 @@ INSERT into sessions(
     session,
     username
 ) VALUES (?, ?)
+`;
+
+// Update a session into the database;
+export const updateUserSession = `
+UPDATE users
+SET session = ?
+WHERE email = ?
 `;
 
 //  Insert a new room into the database.
@@ -144,6 +152,11 @@ export const getOwnerOfRoom = `
 SELECT owner FROM rooms WHERE room = ?
 `;
 
+// Fetch same usernames
+export const getRoomUsernames = `
+SELECT username FROM users WHERE room = ?
+`;
+
 // Deletes a session from the sessions database (logout);
 export const deleteSession = `
 DELETE FROM sessions WHERE session = ?
@@ -199,6 +212,16 @@ export const checkPassword = `
 SELECT password FROM users WHERE email=?
 `;
 
+// Fetch rooms
+export const fetchUserRooms = `
+SELECT session FROM users WHERE room = ?
+`;
+
+// Fetch room from session
+export const fetchRoomSession = `
+SELECT room FROM users WHERE session = ?
+`;
+
 // Fetches a username given an email
 export const fetchUsername = `
 SELECT username FROM users WHERE email = ?
@@ -236,7 +259,7 @@ WHERE username = ?
 // Update a user to leave a room
 export const leaveRoom = `
 UPDATE users
-SET room = null
+SET room = EMPTY
 WHERE username = ?
 `;
 
