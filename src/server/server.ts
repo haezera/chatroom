@@ -8,7 +8,7 @@ import errorHandler from 'middleware-http-errors';
 import http from 'http';
 import { v4 as uuidv4, validate as isUUID } from 'uuid';
 import { WebSocketServer } from 'ws';
-import { pairing, roomEvent, socket } from '../utils/interfaces';
+import { pairing, socket } from '../utils/interfaces';
 import { WebSocket } from 'ws';
 // FUN  CTION IMPORTS
 import { setupSQL } from '../utils/setup';
@@ -104,10 +104,6 @@ app.post('/v1/auth/user/create', async (req: Request, res: Response) => {
     res.status(400).json(response);
     return;
   }
-
-  const room = await connection.promise().query(
-    fetchRoomSession, [response.session]
-  );
 
   res.json(response);
 });
@@ -255,7 +251,7 @@ wss.on('connection', (ws) => {
     // Now need to find the room of this person
     const res = await connection.promise().query(
       fetchRoomSession, [session]
-    )[0][0].room;
+    );
 
     const room = res[0][0].room;
 
