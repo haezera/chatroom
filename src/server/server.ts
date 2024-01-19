@@ -10,7 +10,7 @@ import { v4 as uuidv4, validate as isUUID } from 'uuid';
 import { WebSocketServer } from 'ws';
 import { socket } from '../utils/interfaces';
 
-// FUNCTION IMPORTS
+// FUN  CTION IMPORTS
 import { setupSQL } from '../utils/setup';
 import { userCreate } from '../utils/auth/userCreate';
 import { fetchSessions } from '../utils/auth/getSessions';

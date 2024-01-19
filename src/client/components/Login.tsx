@@ -101,7 +101,7 @@ const Login = () => {
           href=""
           onClick={(event) => {
             event.preventDefault();
-            setView("register");
+            setView('register');
           }}
         >Register</a>
       </div>
