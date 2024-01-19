@@ -3,12 +3,11 @@ import React from 'react';
 import { AppState } from '../AppState';
 
 const Logout = () => {
-
-  const {view, setView} = React.useContext(AppState);
+  const { view, setView } = React.useContext(AppState);
 
   return (
     <button
-      onClick={(event) => {
+      onClick={() => {
         const responsePromise = fetch(
           `http://${window.location.hostname}:${window.location.port}/v1/auth/user/logout`,
           {
@@ -19,14 +18,14 @@ const Logout = () => {
           }
         );
         responsePromise.then((response) => {
-          window.localStorage.removeItem("session");
-          setView("login");
+          window.localStorage.removeItem('session');
+          setView('login');
         });
       }}
     >
       Logout
     </button>
-    )
+  );
 };
 
 export default Logout;

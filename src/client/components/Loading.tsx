@@ -3,7 +3,7 @@
 import React from 'react';
 
 const Loading = () => {
-  console.log("rendering Loading");
+  console.log('rendering Loading');
 
   return (
     <div>
