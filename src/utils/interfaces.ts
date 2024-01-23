@@ -10,8 +10,12 @@ export interface userDbResult {
 }
 
 export interface pairing {
-  websocket: WebSocket;
   session: string;
+}
+
+export interface message {
+  username: string;
+  message: string;
 }
 
 export interface roomEvent {

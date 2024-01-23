@@ -263,6 +263,13 @@ SET room = EMPTY
 WHERE username = ?
 `;
 
+// Update a user to leave a room with sessionId
+export const leaveRoomSession = `
+UPDATE users
+SET room = EMPTY
+WHERE session = ?
+`;
+
 // Pass in an id and a new email for the user.
 //
 // connection.query(
