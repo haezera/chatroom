@@ -6,7 +6,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import errorHandler from 'middleware-http-errors';
 import http from 'http';
-import { v4 as uuidv4, validate as isUUID } from 'uuid';
+import { validate as isUUID } from 'uuid';
 import { WebSocketServer } from 'ws';
 import { pairing, socket } from '../utils/interfaces';
 import { WebSocket } from 'ws';
@@ -23,7 +23,7 @@ import { roomLeave } from '../utils/rooms/roomLeave';
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';
 import { roomJoin } from '../utils/rooms/roomJoin';
-import { fetchRoomSession, fetchUserRooms } from '../utils/sql';
+import { fetchRoomSession, fetchUsernameSession, fetchUserRooms, leaveRoomSession } from '../utils/sql';
 dotenv.config();
 
 const PORT: string = process.env.APP_PORT as string;
@@ -239,8 +239,6 @@ const sessionWS = new Map<string, WebSocket>();
 // WEB SOCKETS
 wss.on('connection', (ws) => {
   const conn: socket = { id: '', websocket: null };
-  conn.id = uuidv4();
-  conn.websocket = ws;
   connections.push(conn);
 
   // Send out messages to everyone
@@ -251,6 +249,10 @@ wss.on('connection', (ws) => {
     // Now need to find the room of this person
     const res = await connection.promise().query(
       fetchRoomSession, [session]
+    );
+
+    const username = await connection.promise().query(
+      fetchUsernameSession, [session]
     );
 
     const room = res[0][0].room;
@@ -267,16 +269,31 @@ wss.on('connection', (ws) => {
 
     // Now emit messsages
     for (const i of wsOfUsers) {
-      i.send(msg.toString());
+      i.send(JSON.stringify({
+        sender: username,
+        message: msg
+      }));
     }
   });
 
   // Pairing event
   ws.on('pair', (data: pairing) => {
     console.log('received pairing data:', data);
-    WSsession.set(data.websocket, data.session);
-    sessionWS.set(data.session, data.websocket);
+    WSsession.set(ws, data.session);
+    sessionWS.set(data.session, ws);
     // Now the pairing exists within the database.
+  });
+
+  ws.on('close', async () => {
+    // Deletes the mappings.
+    const session = WSsession.get(ws);
+    WSsession.delete(ws);
+    sessionWS.delete(session);
+    // Should also let their room id be empty.
+
+    await connection.query(
+      leaveRoomSession, [session]
+    );
   });
 });
 
