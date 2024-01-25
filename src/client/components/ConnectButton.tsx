@@ -10,7 +10,7 @@ const ConnectButton = () => {
 
     // debug
     console.log(`ws://${window.location.hostname}:${window.location.port}`);
-    const socket = new WebSocket(`ws://${window.location.hostname}:${window.location.port}`);
+    const socket = new WebSocket(`ws://${window.location.hostname}:${window.location.port}/chat`);
 
     socket.onopen = (event) => {
       console.log("websocket is open");

@@ -47,7 +47,7 @@ const app = express();
 
 const server = http.createServer(app);
 
-const wss = new WebSocketServer({ server: server });
+const wss = new WebSocketServer({ server: server, path: '/chat' });
 
 const connections: any = [];
 
@@ -256,7 +256,7 @@ wss.on('connection', (ws) => {
     );
 
     const room = res[0][0].room;
-
+    
     // Now fetch a list of the people in the same room
     const users = await connection.promise().query(
       fetchUserRooms, [room]
