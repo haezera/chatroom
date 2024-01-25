@@ -108,19 +108,20 @@ headers:
 "session": "123456789"
 example parameters:
 {
-    "password": "This is optional",
-    "name": "This is also optional - if left, then the room name will be the owners name."
+    "password": "Password123",
+    "name": "The Awesome Room"
 }
 
 response:
 200 When:
 - OK
 Example response:
-{}
+{ room: "12312312" };
 
 400 When:
 - There is already a room with the same name.
 - The token does not exist within the database.
+- The user already has a room that they own. (AKA, already in a room).
 
 401 When:
 - The token does not satisfy the UUID v4 format.
@@ -132,7 +133,7 @@ headers:
 "token": "123456789"
 example parameters:
 {
-    "roomId": "123456789"
+    "room": "123456789"
 }
 
 response:
@@ -170,7 +171,7 @@ Example response:
 - The token inputted does not conform to UUID v4 standards.
 
 -------------------------------------------------------------
-/v1/room/{roomId}/leave DELETE
+/v1/room/leave DELETE
 desc: allow a user to leave a room
 headers:
 "session": "123456789"
