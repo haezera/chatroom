@@ -47,7 +47,7 @@ const app = express();
 
 const server = http.createServer(app);
 
-const wss = new WebSocketServer({ server: server });
+const wss = new WebSocketServer({ server: server, path: '/chat' });
 
 const connections: any = [];
 
@@ -256,7 +256,7 @@ wss.on('connection', (ws) => {
     );
 
     const room = res[0][0].room;
-
+    
     // Now fetch a list of the people in the same room
     const users = await connection.promise().query(
       fetchUserRooms, [room]
@@ -301,7 +301,7 @@ wss.on('connection', (ws) => {
 
 app.use(errorHandler());
 
-app.listen(parseInt(PORT), HOST, () => {
+server.listen(parseInt(PORT), HOST, () => {
   // DO NOT CHANGE THIS LINE
   console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
 });

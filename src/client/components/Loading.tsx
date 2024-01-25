@@ -6,7 +6,7 @@ const Loading = () => {
   console.log('rendering Loading');
 
   return (
-    <div>
+    <div className="loading-screen">
         <h1>Loading</h1>
     </div>
   );
