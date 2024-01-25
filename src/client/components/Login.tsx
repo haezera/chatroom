@@ -7,19 +7,19 @@ import React from 'react';
 import { AppState } from '../AppState';
 
 const Login = () => {
-  console.log("rendering Login");
+  console.log('rendering login');
 
   /// States
 
-  const {view, setView} = React.useContext(AppState);
+  const { view, setView } = React.useContext(AppState);
 
-  const emailInputBundle = React.useState<string>("");
-  let emailInput : string = emailInputBundle[0];
-  const setEmailInput : React.Dispatch<React.SetStateAction<string>>= emailInputBundle[1];
+  const emailInputBundle = React.useState<string>('');
+  const emailInput: string = emailInputBundle[0];
+  const setEmailInput : React.Dispatch<React.SetStateAction<string>> = emailInputBundle[1];
 
-  const passwordInputBundle = React.useState<string>("");
-  let passwordInput : string = passwordInputBundle[0];
-  const setPasswordInput : React.Dispatch<React.SetStateAction<string>>= passwordInputBundle[1];
+  const passwordInputBundle = React.useState<string>('');
+  const passwordInput: string = passwordInputBundle[0];
+  const setPasswordInput : React.Dispatch<React.SetStateAction<string>> = passwordInputBundle[1];
 
   /// Functions
 
@@ -101,7 +101,7 @@ const Login = () => {
           href=""
           onClick={(event) => {
             event.preventDefault();
-            setView("register");
+            setView('register');
           }}
         >Register</a>
       </div>

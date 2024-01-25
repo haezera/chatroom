@@ -8,3 +8,17 @@ export interface socket {
 export interface userDbResult {
   element_exists: number
 }
+
+export interface pairing {
+  session: string;
+}
+
+export interface message {
+  username: string;
+  message: string;
+}
+
+export interface roomEvent {
+  room: string;
+  session: string;
+}

@@ -12,7 +12,7 @@ export const userCreate = async (
   password: string
 ) => {
   // TODO: remove
-  console.log("PASSWORD IS THIS!!!");
+  console.log('PASSWORD IS THIS!!!');
   console.log(password);
 
   if (!validator.isEmail(email)) {
@@ -38,7 +38,7 @@ export const userCreate = async (
   // Insert the user into the users table
   connection.query(
     insertUser,
-    [username, email, hashedPw, null],
+    [username, email, session, hashedPw, 'EMPTY'],
     (err: any, results: any) => {
       if (err) {
         console.log(err);

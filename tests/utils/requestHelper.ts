@@ -14,8 +14,6 @@ const TIMEOUT_MS = 15000;
  * Adds params to url, e.g.
  *     parseRouteParams('/post/:postid', { postid: 999 }) => /post/999
  */
-const parseRouteParams = (route: string, params: Record<string, string>): string =>
-  Object.entries(params).reduce((route, [key, value]) => route.replace(`:${key}`, value.toString()), route);
 
 const requestHelper = (method: HttpVerb, path: string, payload: object, headers: IncomingHttpHeaders) => {
   let qs = {};
@@ -60,14 +58,18 @@ export const requestGetSessions = (password: string) => {
   return requestHelper('GET', '/v1/auth/admin/sessions', { }, { password });
 };
 
-export const requestRoomCreate = (session: string, password?: string, name?: string) => {
+export const requestRoomCreate = (session: string, password: string, name: string) => {
   return requestHelper('POST', '/v1/room/create', { password, name }, { session });
 };
 
-export const requestRoomDelete = (session: string, roomId: string) => {
-  return requestHelper('DELETE', '/v1/room/delete', { roomId }, { session });
+export const requestRoomDelete = (session: string, room: string) => {
+  return requestHelper('DELETE', '/v1/room/delete', { room }, { session });
 };
 
-export const requestRoomJoin = (session: string, roomId: string) => {
-  return requestHelper('PUT', parseRouteParams('/v1/room/:roomId/join', { roomId: roomId }), { roomId }, { session });
+export const requestRoomJoin = (session: string, room: string) => {
+  return requestHelper('PUT', '/v1/room/join', { room }, { session });
+};
+
+export const requestRoomLeave = (session: string) => {
+  return requestHelper('DELETE', '/v1/room/leave', { }, { session });
 };

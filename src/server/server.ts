@@ -6,19 +6,24 @@ import cors from 'cors';
 import morgan from 'morgan';
 import errorHandler from 'middleware-http-errors';
 import http from 'http';
-import { v4 as uuidv4 } from 'uuid';
+import { validate as isUUID } from 'uuid';
 import { WebSocketServer } from 'ws';
-import { socket } from '../utils/interfaces';
-
-// FUNCTION IMPORTS
+import { pairing, socket } from '../utils/interfaces';
+import { WebSocket } from 'ws';
+// FUN  CTION IMPORTS
 import { setupSQL } from '../utils/setup';
 import { userCreate } from '../utils/auth/userCreate';
 import { fetchSessions } from '../utils/auth/getSessions';
 import { logoutUser } from '../utils/auth/userLogout';
 import { loginUser } from '../utils/auth/userLogin';
+import { createRoom } from '../utils/rooms/roomCreate';
+import { roomDelete } from '../utils/rooms/roomDelete';
+import { roomLeave } from '../utils/rooms/roomLeave';
 
 /// GET CONFIGURATION CONSTANTS
 import dotenv from 'dotenv';
+import { roomJoin } from '../utils/rooms/roomJoin';
+import { fetchRoomSession, fetchUsernameSession, fetchUserRooms, leaveRoomSession } from '../utils/sql';
 dotenv.config();
 
 const PORT: string = process.env.APP_PORT as string;
@@ -77,11 +82,10 @@ app.get('/styles.css', (req: Request, res: Response) => {
   });
 });
 
-
 /// placeholder
 
 app.get('/v1/auth/session/validate', (req: Request, res: Response) => {
-  res.json({valid: false});
+  res.json({ valid: false });
 });
 
 /// API ENDPOINTS
@@ -106,6 +110,12 @@ app.post('/v1/auth/user/create', async (req: Request, res: Response) => {
 
 app.delete('/v1/auth/user/logout', async (req: Request, res: Response) => {
   const session = req.headers.session as string;
+
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Inputted session is not UUID' });
+    return;
+  }
+
   const response = await logoutUser(connection, session);
   console.log(response);
   if ('error' in response) {
@@ -131,7 +141,6 @@ app.put('/v1/auth/user/login', async (req: Request, res: Response) => {
 app.get('/v1/auth/admin/sessions', async (req: Request, res: Response) => {
   const password = req.headers.password as string;
   const response = await fetchSessions(connection, password);
-
   if ('error' in response) {
     res.status(400).json(response);
     return;
@@ -145,21 +154,146 @@ app.delete('/v1/auth/clear', (req: Request, res: Response) => {
   res.json({});
 });
 
+// ROOM ENDPOINTS
+
+app.post('/v1/room/create', async (req: Request, res: Response) => {
+  const session = req.headers.session as string;
+
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Session does not conform to UUID' });
+    return;
+  }
+
+  const { password, name } = req.body;
+  const response = await createRoom(connection, name, session, password);
+
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
+  res.json(response);
+});
+
+app.delete('/v1/room/delete', async (req: Request, res: Response) => {
+  const session = req.headers.session as string;
+  console.log(session);
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Session does not conform to UUID' });
+    return;
+  }
+
+  const room = req.query.room as string;
+
+  const response = await roomDelete(connection, room, session);
+  console.log(response);
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
+  res.json(response);
+});
+
+app.put('/v1/room/join', async (req: Request, res: Response) => {
+  const session = req.headers.session as string;
+
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Session does not conform to UUID' });
+    return;
+  }
+
+  const { room } = req.body;
+
+  const response = await roomJoin(connection, room, session);
+
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
+  res.json(response);
+});
+
+app.delete('/v1/room/leave', async (req: Request, res: Response) => {
+  const session = req.headers.session as string;
+
+  if (!isUUID(session)) {
+    res.status(401).json({ error: 'Session does not conform to UUID' });
+    return;
+  }
+
+  const response = await roomLeave(connection, session);
+
+  if ('error' in response) {
+    res.status(400).json(response);
+    return;
+  }
+
+  res.json(response);
+});
+
+const WSsession = new Map<WebSocket, string>();
+const sessionWS = new Map<string, WebSocket>();
+
 // WEB SOCKETS
 wss.on('connection', (ws) => {
-  console.log("websocket connection!");
-
-  // const conn: socket = { id: '', websocket: null };
-  // conn.id = uuidv4();
-  // conn.websocket = ws;
-  // connections.push(conn);
+  const conn: socket = { id: '', websocket: null };
+  connections.push(conn);
 
   // Send out messages to everyone
-  ws.on('message', (msg) => {
-    console.log('received message:', msg.toString());
-    // for (const conns of connections) {
-    //   conns.send(msg.toString());
-    // }
+  // This will need serious debugging btw - Hae
+  ws.on('message', async (msg) => {
+    // Find the room id of the current user
+    const session = WSsession.get(ws);
+    // Now need to find the room of this person
+    const res = await connection.promise().query(
+      fetchRoomSession, [session]
+    );
+
+    const username = await connection.promise().query(
+      fetchUsernameSession, [session]
+    );
+
+    const room = res[0][0].room;
+
+    // Now fetch a list of the people in the same room
+    const users = await connection.promise().query(
+      fetchUserRooms, [room]
+    )[0];
+
+    const wsOfUsers: WebSocket[] = [];
+    for (const i of users) {
+      wsOfUsers.push(sessionWS.get(i.session));
+    }
+
+    // Now emit messsages
+    for (const i of wsOfUsers) {
+      i.send(JSON.stringify({
+        sender: username,
+        message: msg
+      }));
+    }
+  });
+
+  // Pairing event
+  ws.on('pair', (data: pairing) => {
+    console.log('received pairing data:', data);
+    WSsession.set(ws, data.session);
+    sessionWS.set(data.session, ws);
+    // Now the pairing exists within the database.
+  });
+
+  ws.on('close', async () => {
+    // Deletes the mappings.
+    const session = WSsession.get(ws);
+    WSsession.delete(ws);
+    sessionWS.delete(session);
+    // Should also let their room id be empty.
+
+    await connection.query(
+      leaveRoomSession, [session]
+    );
   });
 });
 
