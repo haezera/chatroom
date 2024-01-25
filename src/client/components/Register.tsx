@@ -56,8 +56,8 @@ const Register = () => {
   /// Return statement
 
   return (
-    <div>
-      <div>
+    <div className="register">
+      <div className="register-form">
         <h1>Register</h1>
         <form name="register-form">
           <input
@@ -92,7 +92,7 @@ const Register = () => {
           })}
         </form>
       </div>
-      <div>
+      <div className="already-have-account">
         <p>Already have an account?</p>
         <a
           href=""

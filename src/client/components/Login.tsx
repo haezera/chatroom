@@ -66,8 +66,8 @@ const Login = () => {
   /// Return Value
   
   return (
-    <div>
-      <div className="login">
+    <div className="login">
+      <div className="login-form">
         <h1>Login</h1>
         <form name="login-form">
           {React.createElement("input", {
@@ -95,7 +95,7 @@ const Login = () => {
           })}
         </form>
       </div>
-      <div>
+      <div className="dont-have-account">
         <p>Don't have an account?</p>
         <a
           href=""
