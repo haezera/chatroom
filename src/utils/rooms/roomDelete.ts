@@ -33,6 +33,10 @@ export const roomDelete = async (
   console.log(ownerCheck);
   // The request deleter does not own the room.
   if (ownerCheck[0][0].owner !== session) {
+    console.log("CHECKING");
+    console.log(ownerCheck[0][0].owner);
+    console.log(session);
+    console.log("ENDING CHECK");
     return { error: 'You do not own this room!' };
   }
 

@@ -15,13 +15,10 @@ const Messenger = () => {
       <RoomSelector />
       {
         (() => {
-          // TODO: change != into ==
-          if (messengerState.roomId != null) {
+          if (messengerState.roomId == null) {
             return (
               <div>
                 <p>Join a room first</p>
-                <p>debug button:</p>
-                <ConnectButton />
               </div>
             );
           } else if (messengerState.socket == null) {
