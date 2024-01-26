@@ -259,14 +259,14 @@ WHERE username = ?
 // Update a user to leave a room
 export const leaveRoom = `
 UPDATE users
-SET room = EMPTY
-WHERE username = ?
+SET room = ''
+WHERE session = ?
 `;
 
 // Update a user to leave a room with sessionId
 export const leaveRoomSession = `
 UPDATE users
-SET room = EMPTY
+SET room = ''
 WHERE session = ?
 `;
 

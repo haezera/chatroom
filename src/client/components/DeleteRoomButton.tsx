@@ -2,14 +2,15 @@ import React from 'react';
 
 import { MessengerContext } from './MessengerContext';
 
-const LeaveRoomButton = () => {
+const DeleteRoomButton = () => {
 
   const {messengerState, setMessengerState} = React.useContext(MessengerContext);
 
   const handleSubmit = () => {
-
+    const params = new URLSearchParams();
+    params.append("room", messengerState.roomId);
     const responsePromise = fetch(
-      `http://${window.location.hostname}:${window.location.port}/v1/room/leave`,
+      `http://${window.location.hostname}:${window.location.port}/v1/room/delete?${params.toString()}`,
       {
         method: 'DELETE',
         headers: {
@@ -18,39 +19,38 @@ const LeaveRoomButton = () => {
         },
       }
     );
-
     responsePromise.then((rawResponse : Response) => {
       const jsonResponsePromise: Promise<any> = rawResponse.json();
 
       jsonResponsePromise.then((jsonResponse : any) => {
         if (rawResponse.status == 200) {
-          // should close websocket connection but cbs
           setMessengerState({
             roomId: null,
             messages: [],
             socket: null,
           });
+
         } else {
-          window.alert("room leave failed");
+          window.alert("room delete failed");
         }
       }).catch((err) => {
         console.error(err);
-        window.alert("room leave failed due to error");
+        window.alert("room delete failed due to error");
       });
     }).catch((err) => {
       console.error(err);
-      window.alert("room leave failed due to error");
+      window.alert("room delete failed due to error");
     });
   }
 
   return (
     <button 
-      class="leave-room-button" 
+      class="delete-room-button" 
       onClick={(event) => {
         handleSubmit();
       }}
-    >Leave Room</button>
+    >Delete Room</button>
   );  
 };
 
-export default LeaveRoomButton;
+export default DeleteRoomButton;
