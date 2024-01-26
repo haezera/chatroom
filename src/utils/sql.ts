@@ -260,7 +260,7 @@ WHERE username = ?
 export const leaveRoom = `
 UPDATE users
 SET room = EMPTY
-WHERE username = ?
+WHERE session = ?
 `;
 
 // Update a user to leave a room with sessionId
