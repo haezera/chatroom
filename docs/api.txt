@@ -62,14 +62,14 @@ Example response:
 {}
 
 400 When:
-- There is no such token within the database.
+- There is no such session within the database.
 Example response:
 {
     "error": "error message"
 }
 
 401 When:
-- The token is not a valid structure
+- The session is not a valid structure
 Example response:
 {
     "error: "error message"
@@ -91,7 +91,7 @@ Example response:
     "sessions": [
         {
             "username": "haezera",
-            "token": "123456789",
+            "session": "123456789",
         }
     ]
 }
@@ -107,10 +107,7 @@ desc: create a new chatroom
 headers:
 "session": "123456789"
 example parameters:
-{
-    "password": "Password123",
-    "name": "The Awesome Room"
-}
+{}
 
 response:
 200 When:
@@ -120,17 +117,17 @@ Example response:
 
 400 When:
 - There is already a room with the same name.
-- The token does not exist within the database.
+- The session does not exist within the database.
 - The user already has a room that they own. (AKA, already in a room).
 
 401 When:
-- The token does not satisfy the UUID v4 format.
+- The session does not satisfy the UUID v4 format.
 
 -------------------------------------------------------------
 /v1/room/delete DELETE 
 desc: delete a room (can only be done by the owner)
 headers:
-"token": "123456789"
+"session": "123456789"
 example parameters:
 {
     "room": "123456789"
@@ -144,18 +141,21 @@ Example response:
 
 400 When:
 - The room does not exist within the database
-- The token inputted is not the owner of the room
-- The token does not exist within the database.
+- The session inputted is not the owner of the room
+- The session does not exist within the database.
 
 401 When:
-- The token does not satisfy the UUID v4 format.
+- The session does not satisfy the UUID v4 format.
 
 -------------------------------------------------------------
-/v1/room/{roomId}/join PUT
+/v1/room/join PUT
 desc: allow a user to join a room 
 headers: 
 "session": "123456789"
 example parameters:
+{
+    "room": "1203976"
+}
 
 response:
 200 When:
@@ -165,10 +165,10 @@ Example response:
 
 400 When:
 - The room does not exist within the database 
-- The token inputted does not exist within the database
+- The session inputted does not exist within the database
 
 401 when:
-- The token inputted does not conform to UUID v4 standards.
+- The session inputted does not conform to UUID v4 standards.
 
 -------------------------------------------------------------
 /v1/room/leave DELETE
@@ -187,7 +187,7 @@ Example response:
 - Room does not exist within the database
 
 401 When:
-- The token inputted does not conform to UUID v4 standards
+- The session inputted does not conform to UUID v4 standards
 
 
 

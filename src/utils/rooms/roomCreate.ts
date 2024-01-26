@@ -32,13 +32,13 @@ export const createRoom = async (
   }
 
   // Check if the room name already exists
-  const duplicateName = await connection.promise().query(
-    roomNameExists, [roomName]
-  );
+  // const duplicateName = await connection.promise().query(
+  //   roomNameExists, [roomName]
+  // );
 
-  if (duplicateName[0][0].element_exists === 1) {
-    return { error: 'Room name already exists' };
-  }
+  // if (duplicateName[0][0].element_exists === 1) {
+  //   return { error: 'Room name already exists' };
+  // }
 
   // Good to make room now
   const roomId = uuid();

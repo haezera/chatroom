@@ -2,14 +2,12 @@ import React from 'react';
 
 import { MessengerContext } from './MessengerContext';
 
-const JoinRoomForm = () => {
+const CreateRoomForm = () => {
   const {messengerState, setMessengerState} = React.useContext(MessengerContext);
-
-  const [roomInput, setRoomInput] = React.useState<string>("");
 
   /// Functions
 
-  const handleSubmit = () => {
+  const joinRoom = (roomId: string) => {
     const responsePromise = fetch(
       `http://${window.location.hostname}:${window.location.port}/v1/room/join`,
       {
@@ -18,7 +16,7 @@ const JoinRoomForm = () => {
           'Content-type': 'application/json',
           session: window.localStorage.getItem('session'),
         },
-        body: `{"room": "${roomInput}"}`,
+        body: `{"room": "${roomId}"}`,
       }
     );
     responsePromise.then((rawResponse : Response) => {
@@ -27,7 +25,7 @@ const JoinRoomForm = () => {
       jsonResponsePromise.then((jsonResponse) => {
         if (rawResponse.status == 200) {
           setMessengerState({
-            roomId: roomInput,
+            roomId: roomId,
             messages: messengerState.messages,
             socket: messengerState.socket,
           });
@@ -43,25 +41,52 @@ const JoinRoomForm = () => {
       console.error(err);
       window.alert("room join failed due to error");
     });
+  };
+
+  const handleSubmit = () => {
+    const responsePromise = fetch(
+      `http://${window.location.hostname}:${window.location.port}/v1/room/create`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+          session: window.localStorage.getItem('session'),
+        },
+        body: "{}",
+      }
+    );
+    responsePromise.then((rawResponse : Response) => {
+      const jsonResponsePromise: Promise<{room: string}> = rawResponse.json();
+
+      jsonResponsePromise.then((jsonResponse : {room: string}) => {
+        if (rawResponse.status == 200) {
+
+          // automatically join the room
+          joinRoom(jsonResponse.room);
+
+        } else {
+          window.alert("room create failed");
+        }
+      }).catch((err) => {
+        console.error(err);
+        window.alert("room create failed due to error");
+      });
+    }).catch((err) => {
+      console.error(err);
+      window.alert("room create failed due to error");
+    });
   }
 
   /// Return statement
 
   return (
-    <div className="join-roomform">
-      <div className="join-room-form">
-        <form name="join-room-form">
-          <input
-            placeholder = "room ID"
-            className = 'room-id-input-box'
-            onChange = {(event : React.ChangeEvent) => {
-              setRoomInput(event.target.value);
-            }}
-          />
+    <div className="create-roomform">
+      <div className="create-room-form">
+        <form name="create-room-form">
           <input 
             type = 'submit'
-            value = 'Join Room'
-            className = 'join-room-submit-button'
+            value = 'Create Room'
+            className = 'create-room-submit-button'
             onClick = {(event : React.MouseEvent<HTMLButtonElement>) => {
               event.preventDefault();
               handleSubmit();
@@ -73,4 +98,4 @@ const JoinRoomForm = () => {
   )
 };
 
-export default JoinRoomForm;
+export default CreateRoomForm;

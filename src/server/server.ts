@@ -164,8 +164,7 @@ app.post('/v1/room/create', async (req: Request, res: Response) => {
     return;
   }
 
-  const { password, name } = req.body;
-  const response = await createRoom(connection, name, session, password);
+  const response = await createRoom(connection, "removed", session, "removed");
 
   if ('error' in response) {
     res.status(400).json(response);
@@ -233,55 +232,58 @@ app.delete('/v1/room/leave', async (req: Request, res: Response) => {
   res.json(response);
 });
 
+const WebSocketUsed = new Set<WebSocket>();
 const WSsession = new Map<WebSocket, string>();
 const sessionWS = new Map<string, WebSocket>();
 
 // WEB SOCKETS
 wss.on('connection', (ws) => {
-  const conn: socket = { id: '', websocket: null };
-  connections.push(conn);
-
   // Send out messages to everyone
   // This will need serious debugging btw - Hae
   ws.on('message', async (msg) => {
-    // Find the room id of the current user
-    const session = WSsession.get(ws);
-    // Now need to find the room of this person
-    const res = await connection.promise().query(
-      fetchRoomSession, [session]
-    );
+    // Check whether to interpret as a pairing or a message
 
-    const username = await connection.promise().query(
-      fetchUsernameSession, [session]
-    );
+    if (WebSocketUsed.has(ws)) {
+      // Interpret as message
 
-    const room = res[0][0].room;
-    
-    // Now fetch a list of the people in the same room
-    const users = await connection.promise().query(
-      fetchUserRooms, [room]
-    )[0];
+      // Find the room id of the current user
+      const session = WSsession.get(ws);
+      // Now need to find the room of this person
+      const res = await connection.promise().query(
+        fetchRoomSession, [session]
+      );
+  
+      const username = await connection.promise().query(
+        fetchUsernameSession, [session]
+      );
+  
+      const room = res[0][0].room;
+      
+      // Now fetch a list of the people in the same room
+      const users = await connection.promise().query(
+        fetchUserRooms, [room]
+      )[0];
+  
+      const wsOfUsers: WebSocket[] = [];
+      for (const i of users) {
+        wsOfUsers.push(sessionWS.get(i.session));
+      }
+  
+      // Now emit messsages
+      for (const i of wsOfUsers) {
+        i.send(JSON.stringify({
+          sender: username,
+          message: msg
+        }));
+      }
+    } else {
+      // Interpret as pairing
 
-    const wsOfUsers: WebSocket[] = [];
-    for (const i of users) {
-      wsOfUsers.push(sessionWS.get(i.session));
+      console.log('received pairing data:', msg);
+      WSsession.set(ws, msg.toString());
+      sessionWS.set(msg.toString(), ws);
+      // Now the pairing exists within the database.
     }
-
-    // Now emit messsages
-    for (const i of wsOfUsers) {
-      i.send(JSON.stringify({
-        sender: username,
-        message: msg
-      }));
-    }
-  });
-
-  // Pairing event
-  ws.on('pair', (data: pairing) => {
-    console.log('received pairing data:', data);
-    WSsession.set(ws, data.session);
-    sessionWS.set(data.session, ws);
-    // Now the pairing exists within the database.
   });
 
   ws.on('close', async () => {
@@ -289,6 +291,7 @@ wss.on('connection', (ws) => {
     const session = WSsession.get(ws);
     WSsession.delete(ws);
     sessionWS.delete(session);
+    WebSocketUsed.delete(ws);
     // Should also let their room id be empty.
 
     await connection.query(
