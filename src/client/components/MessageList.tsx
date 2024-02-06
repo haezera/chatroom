@@ -1,14 +1,17 @@
 import React from 'react';
 
 import Message from "./Message";
+import { MessengerContext } from './MessengerContext';
 
 const MessageList = () => {
 
+  const {messengerState, setMessengerState} = React.useContext(MessengerContext);
+
   return (
     <div>
-      <Message username="jeff" content="hello world!"/>
-      <Message username="jeff" content="hello world!"/>
-      <Message username="jeff" content="hello world!"/>
+      {messengerState.messages.map(x => {
+        <Message username={x.username} content={x.content}/>
+      })}
     </div>
   )
 };

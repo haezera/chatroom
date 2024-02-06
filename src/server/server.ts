@@ -265,23 +265,34 @@ wss.on('connection', (ws) => {
       )[0];
   
       const wsOfUsers: WebSocket[] = [];
+
+      // debugging
+      console.log("WHAT THE HELLLLL");
+      for (const i of users) {
+        console.log(i);
+      }
+      console.log("MEOWW");
+
       for (const i of users) {
         wsOfUsers.push(sessionWS.get(i.session));
       }
+
+      console.log("nevermind");
   
       // Now emit messsages
       for (const i of wsOfUsers) {
         i.send(JSON.stringify({
-          sender: username,
+          username: username,
           message: msg
         }));
       }
     } else {
       // Interpret as pairing
 
-      console.log('received pairing data:', msg);
+      console.log('received pairing data:', msg.toString());
       WSsession.set(ws, msg.toString());
       sessionWS.set(msg.toString(), ws);
+      WebSocketUsed.add(ws);
       // Now the pairing exists within the database.
     }
   });

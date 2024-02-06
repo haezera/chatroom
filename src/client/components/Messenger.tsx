@@ -5,6 +5,7 @@ import { MessengerContext } from './MessengerContext';
 import MessageList from './MessageList';
 import RoomSelector from './RoomSelector';
 import ConnectButton from './ConnectButton';
+import MessageCreator from './MessageCreator';
 
 const Messenger = () => {
 
@@ -29,7 +30,10 @@ const Messenger = () => {
             );
           } else {
             return (
-              <MessageList />
+              <>
+                <MessageList />
+                <MessageCreator />
+              </>
             );
           }
         })()

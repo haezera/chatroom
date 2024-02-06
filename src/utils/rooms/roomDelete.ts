@@ -1,5 +1,5 @@
 import { Connection } from 'mysql2/typings/mysql/lib/Connection';
-import { isSession, deleteRoom, getOwnerOfRoom, isRoom } from '../sql';
+import { isSession, deleteRoom, getOwnerOfRoom, isRoom, leaveRoom } from '../sql';
 
 export const roomDelete = async (
   connection: Connection,
@@ -39,6 +39,11 @@ export const roomDelete = async (
     console.log("ENDING CHECK");
     return { error: 'You do not own this room!' };
   }
+
+  // Leave the room
+  await connection.promise().query(
+    leaveRoom, [session]
+  );
 
   // Delete the room
   await connection.promise().query(

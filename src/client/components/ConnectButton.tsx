@@ -28,30 +28,17 @@ const ConnectButton = () => {
       });
 
       console.log(messengerState);
+
+      socket.onmessage = (msg) => {
+        messengerState.messages.push(JSON.parse(msg.data()));
+
+        setMessengerState({
+          roomId: messengerState.roomId,
+          messages: messengerState.messages,
+          socket: messengerState.socket,
+        });
+      }
     };
-
-    // socket.onmessage = (msg) => {
-    //   const newState = {...messengerState};
-    //   messengerState.messages.push({
-    //     sender: "jeff",
-    //     timestamp: 420,
-    //     content: "placeholder meow. " + msg.data,
-    //   });
-    //   setMessengerState(newState);
-    // }
-
-    // socket.onerror = (error) => {
-    //   console.error("websocket error: ", error);
-    // }
-
-    // socket.onclose = (event) => {
-    //   console.log("disconnected from websocket");
-
-    //   const newState = {...messengerState};
-    //   messengerState.socket = null;
-    //   setMessengerState(newState);
-    // }
-
   }
       
   return (
